@@ -46,17 +46,7 @@ May not *overwrite* the key's value but instead *append* to the key value or *ta
 
 May produce a set (or list) of values corresponding to the key.
 
-
-## Ok, for instance?
-
-An Encyclopedia is an abstract class.  Two *concrete* Encyclopedias are Relations and Forests.
-
-A **Relation** is multi-valued extension of a Dictionary.  In addition to the functional (many-to-one, M:1) behavior of a Dictionary, a Relation supports all four *cardinalities*, specifically: M:1, 1:M, 1:1 and M:M.  Relations are invertible [^partially] providing direct mappings from values back to keys.
-
-[^partially]: all relations are "invertible" in the sense that domain/range may be swapped; however, relations composed with their inverse will only create Unity properly when the cardinality is 1:M or 1:1. 
-
-A **Forest** is a collection of **Trees**.  Forests use the standard set/get for constructing Tree branches as well as common tree functions such as branch().  Forests may be combined with other Forests using set operations (*horizontal* combination) and be grown on top of other Forests using composition (*vertical* combination)
-
+# Summary of Encyclopedia Operations
 ## Encyclopedia (MutableMappingRing)
 
 The list of operations for an Encyclopedia follows:
@@ -99,7 +89,16 @@ Unity[x] == x | existence of *unity*
 (E\*~E)[x] == (~E\*E)[x] == x | Encyclopedia composed with its inverse produces Unity
 (Unity * E)[x] == E[x] | Unity composed with an Encyclopedia produces that Encyclopedia 
 
-# Concrete Examples
+# Ok, for instance?
+
+An Encyclopedia is an abstract class.  Two *concrete* Encyclopedias are Relations and Forests.
+
+A **Relation** is multi-valued extension of a Dictionary.  In addition to the functional (many-to-one, M:1) behavior of a Dictionary, a Relation supports all four *cardinalities*, specifically: M:1, 1:M, 1:1 and M:M.  Relations are invertible [^partially] providing direct mappings from values back to keys.
+
+[^partially]: all relations are "invertible" in the sense that domain/range may be swapped; however, relations composed with their inverse will only create Unity properly when the cardinality is 1:M or 1:1. 
+
+A **Forest** is a collection of **Trees**.  Forests use the standard set/get for constructing Tree branches as well as common tree functions such as branch().  Forests may be combined with other Forests using set operations (*horizontal* combination) and be grown on top of other Forests using composition (*vertical* combination)
+
 ## Relation
 
 Relations are Indexed Encyclopedias which support all four *cardinalities*:
