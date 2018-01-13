@@ -1,5 +1,4 @@
-# Overview 
-## What is It
+# What is It
 
 An Encyclopedia is a container template intended for smallish data sets which provides many of the benefits of a relational (and non-relational) database but with lower syntactic friction.  In particular, an Encyclopedia uses arithmetic expressions typical of first-class objects (e.g. lists, dictionaries) to perform common dataset operations such as merging, subsetting and object combination. Encyclopedias supports functional composition so as to act on entire Encyclopedias in a single statement similar to data frame vectorization.
 
@@ -17,7 +16,7 @@ Encyclopedias may, optionally, include:
 
 # Say that Differently 
 
-In math-speak, an Encyclopedia is a similar to Ring  where:
+In math-speak, an Encyclopedia is a similar to Ring where:
 
 - keys serve as the *domain* 
 - values serve as the *range*
