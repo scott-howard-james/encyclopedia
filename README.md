@@ -9,14 +9,14 @@ An **Encyclopedia** is a mapping with the following additional features:
 - **composition**: Encyclopedia contents may be altered by functions as well as  other Encyclopedias
 - **set operations**: Encyclopedias may be combined using union, difference and intersection operators
 
-Encyclopedias may, optionally, include:
+Encyclopedias may, optionally, support:
 
 - **multi-valued**: keys may be *assigned* single values or *tagged* with multiple values 
 - **inversion**: Encyclopedia may be inverted such that their values map to their keys
 
 # Say that Differently 
 
-In math-speak, an Encyclopedia is a similar to Ring where:
+In math-speak, an Encyclopedia is a similar to [Ring](https://en.wikipedia.org/wiki/Ring_%28mathematics%29) where:
 
 - keys serve as the *domain* 
 - values serve as the *range*
@@ -115,7 +115,7 @@ Notation | Meaning
  ---  |  ---
 R[x] = y | either overwrite or append to *x* values depending on cardinality of the Relation (Note: M:1 and 1:1 overwrite, the other two append)
 del R[x] | remove *x* from domain of E and all associated values for *x*
-R1 + R2 | similar to {**E1, **E2} for python dictionaries but with associated cardinality constraints
+R1 + R2 | similar to {\*\*E1, \*\*E2} for python dictionaries but with associated cardinality constraints
 R1 - R2 | remove any R2.keys that lie within R1.keys and the associated values
 f * R  | {R[f(x)]:f(R[x]) for x in R if f(x) is not None} [^comprehension]
 R1 * R2 | {R1[x]:R1[R2[x]) for x in R2 if R[x] is not None} [^comprehension]
@@ -155,35 +155,30 @@ The operations for a Forest are as follows:
 Notation | Meaning
  ---  |  ---
 F[x] = y | connect new nodes keyed by *y* to nodes keyed by *x*, forming *branch(es)*
-F[x] | a Forest consisting all nodes reachable from *x*.  Note that this Forest is a *shallow copy* of elements from within F and, in particular, contains a reference to the generative Forest.
+F[x] | a Forest consisting all nodes reachable from *x*
 F.branch(x) | same as F[x] but raise error if resulting Forest contains more than one Tree
 F[x] = F2 | graft F2 to F1 at *x*
 del F[x] | prune branches for all nodes keyed by *x*.
-F.copy() | shallow copy of branch within F
-F.deepcopy() | what you expect
+F.copy() | (deep) copy of branch within F
 F.keys() | all node *keys*
 F.values() | all *nodes* within Forest
 len(F) | number of *nodes* within Forest
+F.leaves(x) | all topmost nodes reachable by *x*
 F.canopy() | union of all leaf nodes in F
-F.cutting(k) | Forest made from all branches of all nodes with height *k*.
-F.level(k) | set of nodes at level *k* {X for X in {F[x] for x in F} if X.level()==k}[^comprehension]
-F.unique(x) | function to create a unique node ID accessed by key *x*.  May be called directly by user (producing a Node) or called at set-time to produce the unique node ID.
+F.sprout(x) | function to create a unique node ID accessed by key *x*.  May be called directly by user (producing a Node) or called at set-time to produce the unique node ID.
 F.root(x) | return node(s) of Tree root containing *x*
-F.below(x) | return parent node(s) immediately below *x*
-F.above(x) | return child nodes immediately above *x*
+F.below(x) | return parent node(s) immediately *below* *x*
+F.above(x) | return child nodes immediately *above* *x*
 F1 + F2 | (set) union of two Forests. Common Trees within both Forests will only appear once in the union.
 F1 - F2 | remove Trees contained in F2 from F1
 F1 * F2  | for each *x* key common to F1 and F2: graft F2.branch(x) to F1 at *x*.
 f * J  | {{f(x):f(J[x]) for x in J if f[x] is not None}}
 f\*(J1+J2) == f\*J1 + f\*J2 | f operates on Forest elements separately thus distribution works as expected
 F.heights(x) | topological level(s) of all nodes identified by *x* in F
-F.height(x) | return a single height; fail if there are multiple levels keyed by 
-*x*
-F.__iter__ | iterate through nodes by topological order of F
 
 Nodes are hashable, unique elements within a Forest and may be used in set-get notation.  They contain the following properties:
 
 Notation | Meaning
  ---  |  ---
-X.key | the (non-unique) key for this node within its containing Forest
-X.id | the unique ID within Forest (the hash)
+X.alias | the (non-unique) key for this node within its containing Forest
+X.id | the unique ID within Forest (the \_\_hash\_\_)
