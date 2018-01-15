@@ -3,10 +3,10 @@ import unittest
 import hashlib
 import types
 # internal
-import templates
-from relate import Relation
+from encyclopedia.templates import Unindexed
+from encyclopedia.relate import Relation
 
-class Forest(templates.Unindexed):
+class Forest(Unindexed):
     '''
     An Encyclopedia of trees
 
@@ -36,7 +36,7 @@ class Forest(templates.Unindexed):
         self.parent = parent # future use for referencing originating forest (where applicable)
         self.frozen = False # start off mutable
 
-    unfrozen=templates.Unindexed.unfrozen
+    unfrozen = Unindexed.unfrozen
 
     def __iter__(self):
         '''
@@ -290,7 +290,7 @@ class Forest(templates.Unindexed):
             alias = None,
             identified: bool = True,
             offset: int = 0,
-            morph: types.FunctionType = templates.Unindexed.identity, # modify keys/values upon entry
+            morph: types.FunctionType = Unindexed.identity, # modify keys/values upon entry
         ):
         '''
         Return subforest rooted at alias
@@ -441,148 +441,3 @@ class Forest(templates.Unindexed):
             return aliases.pop()
         else:
             return aliases
-
-class Test_Forest (unittest.TestCase):
-
-    def setUp(self):
-        self.f = f = Forest()
-        f += 'G01'
-        f['G01'] = 'G11'
-        f['G01'] = 'G12'
-        f['G11'] = 'G21'
-        f['G21'] = 'G31'
-        f['G21'] = 'G32'
-        f['G21'] = 'G33'
-        f['G32'] = 'G41'
-        f +=  'G02'
-
-    def test_base(self):
-        f1 = self.f
-        assert len(f1.trees) == 2
-        assert f1.height() == 4
-        assert len(f1.canopy()) == len(f1) - 4
-        assert 'G21' in f1
-        f3 = f1['G21']
-        assert f3.counter == f1.counter
-        assert len(set(f1.root('G21'))) == 1
-        assert len(set(f3.root('G21'))) == 1
-        assert Forest.node2alias(f3.root('G21')) == 'G21'
-        assert Forest.node2alias(f1.root('G21')) == 'G01'
-        f3 = f1.cutting('G21', identified=False)
-        assert len(set(f3.above('G21'))) == 3
-        assert len(set(f3.below('G21'))) == 0
-        assert len(set(f1.below('G21'))) == 1
-        assert Forest.node2alias(set(f3.leaves())) == {'G41', 'G33', 'G31'}
-        assert f3.counter < f1.counter
-        assert 'G01' in f1
-        assert 'GX1' not in f1
-        f2 = f1['G11']
-        assert isinstance(f2, Forest)
-        assert len(f2.trees) == 1
-        assert len(f2) < len(f1)
-
-    def test_arithmetic(self):
-        f1 = self.f.copy()
-        f2 = f1.copy()
-        f2 += f1.copy()
-        assert len(f2) == 2*len(f1)
-        f3 = f2 - f1
-        assert len(f3) == 0
-        f3 = f2 + f1
-        assert len(f3) == 3*len(f1)
-        f4 = f3.unique()
-        assert len(f4) == len(f1)
-        assert f4 == f1
-        f5 = f1 - f2
-        assert len(f5) == 0
-        f5 = f1 & f2
-        assert f5 == f1
-        f6 = f1.copy()
-        f5 = f6 & f1
-        assert f5 == f1
-        f6['G21'] = 'GXX'
-        assert f1 != f6
-        f5 = f6 & f1
-        assert Forest.node2alias(f5.values()) == 'G02'
-        assert Forest.node2alias(f5.leaves()) == 'G02'
-        assert len(f5) == 1
-
-    def test_aliases(self):
-        f = self.f
-        f['G01'] = 'G0X'
-        f['G21'] = 'G0X'
-        l1 = len(f)
-        f['G0X'] = 'G0Y'
-        assert len(f) == l1 + 2
-        assert len(f['G0Y']) == 2
-
-    def test_branching(self):
-        f1 = self.f
-        f2 = f1.copy()
-        assert len(f2) == len(f1)
-        assert Forest.equals(f1, f2)
-        assert f1['G21'] == f2['G21']
-        assert f1['G21'] != f1['G01']
-        assert f1 == f2
-        f2['G02'] =f2['G21']
-        assert len(f2) > len(f1)
-        assert not Forest.equals(f1, f2)
-        assert f1 != f2
-        f3 = f1.cutting(offset=100)
-        assert f3 == f1
-
-    def test_iteration(self):
-        f1 = self.f
-        assert len(list(f1)) ==\
-            len(f1.sorted()) ==\
-            len(f1.sorted(level=False)) ==\
-            len(f1)
-
-    def test_composition(self):
-        # scaled
-        f1 = self.f
-        f2 = 4*f1
-        assert len(f2) == 4*len(f1)
-        # inner string modification
-        def add_x(x):
-            return x + 'x'
-        f2 = add_x * f1 # modify all the elements
-        assert f2 != f1
-        assert len(f2) == len(f1)
-        def rm_x(x):
-            return x[:-1]
-        f3 = rm_x * f2
-        assert f3 == f1 # undo the modifications
-        # element removal
-        def rm_g4(x):
-            return x if 'G4' not in x else None
-        f4 = rm_g4 * f1
-        assert len(f4) < len(f1)
-        assert 'G41' in Forest.node2alias(f1.leaves())
-        assert 'G41' not in Forest.node2alias(f4.leaves())
-        # Forest composition
-        f5 = Forest()
-        f5 += 'G21'
-        f5['G21'] = 'G34'
-        f5['G34'] = 'G44'
-        f5['G44'] = 'G51'
-        f6 = f1 * f5
-        assert len(f6) == len(f1) + len(f5) - 1
-        assert f6.height() == f1.height() + 1
-
-    def test_del(self):
-        f1 = self.f.copy()
-        f2 = f1.copy()
-        del f1['G32']
-        assert len(f1) < len(self.f)
-        del f2['G41']
-        assert len(f1) < len(f2) < len(self.f)
-
-    def test_union(self):
-        f1 = self.f.copy()
-        f2 = f1.copy()
-        f2 += 'G03'
-        f2['G03'] = 'G13'
-
-if __name__ == '__main__':
-    unittest.main()

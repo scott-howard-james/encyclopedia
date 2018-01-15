@@ -1,12 +1,11 @@
 # standard
 from collections import OrderedDict, Mapping, MutableMapping, Iterable
 import operator
-import unittest
 import types
 # internal
-import templates
+from encyclopedia.templates import Indexed, Unity
 
-class Relation(templates.Indexed):
+class Relation(Indexed):
     '''
     General purpose, discrete relation container for all mapping cardinalities:
 
@@ -28,7 +27,7 @@ class Relation(templates.Indexed):
         '1:M': {'1:1': '1:M', '1:M': '1:M', 'M:1': 'M:M', 'M:M': 'M:M'},
         'M:M': {c: 'M:M' for c in CARDINALITIES}}
 
-    unfrozen = templates.Indexed.unfrozen
+    unfrozen = Indexed.unfrozen
 
     def __init__(self,
         init=None, # can start with another dictionary, list or Relation
@@ -49,7 +48,7 @@ class Relation(templates.Indexed):
         self.frozen = frozen
 
         if cardinality not in Relation.CARDINALITIES:
-            raise RelationError('Invalid restriction:' + str(cardinality))
+            raise Relation.Error('Invalid restriction:' + str(cardinality))
         else:
             self.cardinality = cardinality
 
@@ -189,7 +188,7 @@ class Relation(templates.Indexed):
                 else:
                     for val in value:
                         assign(val)
-        elif isinstance(other, templates.Unity):
+        elif isinstance(other, Unity):
             new=self.copy()
         else:
             assert False
@@ -226,13 +225,11 @@ class Relation(templates.Indexed):
                     new[(k1, k2)] = v3
         return new
 
-
-    class Error(templates.Indexed.Error):
+    class Error(Indexed.Error):
         '''
         Label Relation exceptions
         '''
         pass
-
 
 # Shortcuts for Relation instantiations
 
@@ -253,204 +250,3 @@ class Partition(Relation):
     def __init__(self, init=None, ordered=False):
         Relation.__init__(self, init, cardinality='1:M', ordered=ordered)
 
-# Unit Tests
-
-class Relation_Tests(unittest.TestCase):
-
-    def setUp(self):
-        fruit = self.fruit = Relation(ordered=True)
-        fruit['apple'] = 'red'
-        fruit['apple'] = 'shiny'
-        fruit['apple'] = 'round'
-        fruit['melon'] = 'round'
-        fruit['melon'] = 'green'
-        fruit['watermelon'] = 'red'
-        fruit['watermelon'] = 'green'
-        fruit['watermelon'] = 'ovoid'
-        fruit['pear'] = 'yellow'
-        fruit['kiwi'] = 'green'
-        fruit['kiwi'] = 'seedy'
-        amount = self.amount = Isomorphism(
-            {'pack': 5, 'bushel': 10, 'crate': 100})
-        colors = self.colors = Isomorphism(
-            {'red': (1, 0, 0), 'blue': (0, 1, 0), 'green': (0, 0, 1)})
-
-    def test_basic(self):
-        fruit = self.fruit
-        assert 'seedy' in ~fruit
-        assert 'lolipop' not in fruit
-        assert fruit.pop('kiwi') == ['green', 'seedy']
-        assert 'seedy' not in fruit.values()
-        for f in fruit:
-            assert isinstance(f, str)
-        assert list(fruit.keys()) == ['apple', 'melon', 'watermelon', 'pear']
-        assert len(fruit) == 4
-        assert len(~fruit) == 6
-        assert len(fruit['apple']) == 3
-        assert len(fruit['watermelon']) == 3
-        assert 'pear' in (~fruit)['yellow']
-        assert 'yellow' in fruit['pear']
-        assert fruit['pear'] == ['yellow']
-        del fruit['pear']
-        assert len(fruit) == 3
-        assert len(~fruit) == 5
-        del fruit['apple']
-        assert len(fruit) == 2
-        assert len(~fruit) == 4
-        another = fruit.copy()
-        assert len(~another) == len(~fruit)
-        assert len(another) == len(fruit)
-        assert len(fruit.keys()) == len(fruit)
-        assert len(fruit.values()) == len(~fruit)
-        assert len(fruit.items()) == len(fruit)
-        assert fruit.get('armadillo') is None
-        fruit.clear()
-        assert len(fruit) == 0
-        assert fruit.get('melon') is None
-
-    def test_creation(self):
-        m = Isomorphism({'a': 1, 'b': 2, 'c': 11})
-        mp = ~m
-        assert mp[2] == 'b'
-        m = Function({'a': 1, 'b': 1, 'c': 11})
-        mp = ~m
-        assert mp[1] == {'b', 'a'}
-        m = Partition({'a': 1, 'b': 2, 'c': 11})
-        m['a'] = 3
-        mp = ~m
-        assert mp[1] == 'a'
-        assert mp[2] != 'a'
-        assert mp[3] == 'a'
-
-    def test_composite(self):
-        fruits = {'apple': 'red', 'cherry': 'red',
-                  'strawberry': 'red', 'banana': 'yellow'}
-        fruit = Relation(fruits)
-        assert len(fruit) == len(fruits)
-        more = {'yellow': 'pear', 'pomegranate': 'red', 'watermelon': 'seedy'}
-        fruit.update(more)
-        assert len(fruit) == len(more) + len(fruits)
-        even_more = Isomorphism({'papaya': 'starchy', 'grape': 'tangy'})
-        fruit.update(even_more)
-        assert len(fruit) == len(even_more) + len(more) + len(fruits)
-
-    def test_restrictions(self):
-        fruit = Relation(cardinality='1:1')
-        fruit['apple'] = 'red'
-        fruit['pear'] = 'yellow'
-        fruit['apple'] = 'green'
-        assert 'apple' in fruit
-        fruit['watermelon'] = 'green'
-        assert 'apple' not in fruit
-        fruit['papaya'] = 'green'
-        assert 'watermelon' not in fruit
-
-        # NOTE: setting restriction directly; not suggested usage as this can
-        # make objects inconsistent.
-
-        fruit.cardinality = 'M:1'
-        fruit['papaya'] = 'green'
-        fruit['raspberry'] = 'blue'
-        fruit['raspberry'] = 'red'
-        assert fruit['raspberry'] == 'red'
-        fruit['cranberry'] = 'red'
-        assert 'raspberry' in fruit
-        assert fruit['raspberry'] == 'red'
-
-        fruit.cardinality = '1:M'
-        fruit['cranberry'] = 'round'
-        fruit['lemon'] = 'sour'
-        fruit['cranberry'] = 'sour'
-        assert 'lemon' not in fruit
-        assert len(fruit['cranberry']) > 1
-        fruit['pear'] = 'sweet'
-
-        fruit.cardinality = 'M:M'
-        fruit['apple'] = 'sweet'
-        assert len(fruit['apple']) == 1
-        fruit['apple'] = 'fruit'
-        assert len(fruit['apple']) == 2
-
-    def test_composition(self):
-        fruit = Function()
-        fruit['apple'] = 'red'
-        fruit['pear'] = 'yellow'
-        colors = Isomorphism()
-        colors['yellow'] = '0:1:1'
-        colors['red'] = '1:0:0'
-        assert (fruit * colors).cardinality == 'M:1'
-        assert Isomorphism(fruit * colors).cardinality == '1:1'
-        properties = Relation()
-        properties['red'] = 'sanguine'
-        properties['red'] = 'pinkish'
-        properties['red'] = 'bloody'
-        assert len(fruit * properties) == 1
-        assert len(properties * fruit) == 0
-
-    def test_arithmetic(self):
-        colors = Isomorphism()
-        colors['yellow'] = '0:1:1'
-        colors['red'] = '1:0:0'
-        fruit = Isomorphism()
-        fruit['apple'] = 'red'
-        fruit['pear'] = 'yellow'
-        funny = fruit + colors
-        assert len(funny) == len(fruit) + len(colors)
-        funny -= colors
-        assert funny == fruit
-
-    def test_freeze(self):
-        f = self.fruit
-        c = self.colors
-        f1 = f.copy()
-        f1['something'] = 'else'
-        assert 'something' in f1
-        assert f1 != f
-        del f1['apple']
-        assert 'apple' not in f1
-        f2 = self.fruit.freeze()
-        f2['something'] = 'else'
-        assert f2 == f
-        del f2['apple']
-        assert 'apple' in f2
-
-    def test_crosss_product(self):
-        fruit = self.fruit
-        colors = self.colors
-        assert len(fruit.cross(colors)) == len(fruit) * len(colors)
-
-    def test_pipe(self):
-        fruit = self.fruit
-        new = fruit * (lambda x: x + '1') * (lambda x: x.upper())
-        assert len(new) == len(fruit)
-        new = (~fruit) * (lambda x: x + '1') * (lambda x: x.upper())
-        assert len(new) == len(~fruit)
-        new = fruit * \
-            (lambda x: x if x not in ['shiny', 'red', 'round'] else None)
-        assert 'apple' not in new
-        new = fruit * (lambda x: x if x in ['shiny', 'red', 'round'] else None)
-        assert 'kiwi' not in new
-        assert 'apple' in new
-
-    def test_zero(self):
-        fruit=self.fruit
-        more=fruit+templates.Zero()
-        for key in fruit:
-            assert more[key] == fruit[key]
-
-    def test_unity(self):
-        unity = templates.Unity()
-        fruit = self.fruit
-        assert len(fruit*unity) == len(fruit)
-        back = fruit * ~fruit # not identity, but kind of
-        for key in back:
-            assert key in back[key]
-
-        more = Relation(cardinality='1:M')
-        more.update(fruit)
-        identity = more * ~more  # identity
-        for key in identity:
-            assert key == key
-
-if __name__ == '__main__':
-    unittest.main()
