@@ -11,32 +11,29 @@ An **Encyclopedia** is a mapping with the following additional features:
 
 Encyclopedias may, optionally, support:
 
-- **multi-valued**: keys may be *assigned* single values or *tagged* with multiple values 
+- **multi-valued**: keys may be *assigned* single values or *tagged* with multiple values
 - **inversion**: Encyclopedia may be inverted such that their values map to their keys
 
-# Say that Differently 
+# Say that Differently
 
 In math-speak, an Encyclopedia is a similar to a mathematical [Ring](https://en.wikipedia.org/wiki/Ring_%28mathematics%29) where:
 
-- keys serve as the *domain* 
+- keys serve as the *domain*
 - values serve as the *range*
 - ring *addition* is performed by set union
 - *additive inverse* is performed by set difference
 - *multiplication* is performed by the composition operator
 
-In python-speak this could be called a *MutableMappingRing*.  
 In python-speak this could be called a *MutableMappingRing* derived from the
-[*MutableMapping*](https://docs.python.org/3/library/collections.abc.html) abstract class.
-
-When an *multiplicative inverse* (~E) is available, the Encyclopedia is a [Field](https://en.wikipedia.org/wiki/Field_(mathematics)) where:
+[*MutableMapping*](https://docs.python.org/3/library/collections.abc.html) abstract class. When an *multiplicative inverse* (~E) is available, the Encyclopedia is a [Field](https://en.wikipedia.org/wiki/Field_(mathematics)) where:
 
     ~E*E == ~E*E == Identity
-    
-that is, 
+
+that is,
 
     (~E*E)[x]==x
 
-In python-speak this could be called a *MutableMappingField*. 
+In python-speak this could be called a *MutableMappingField*.
 
 Certain implementations of Encyclopedia may be multi-valued meaning that, assignment:
 
@@ -60,7 +57,7 @@ del E[x] | remove *x* from domain of E, also known as *burglary* (yes,  the obli
 E1 + E2 | a new Encyclopedia creating by combining elements of *E2* and *E1*.  Note that set operations are inherently *commutative* (i.e. `E1+E2==E2+E1`) and *associative* (i.e. `E1+(E2+E3) == (E1+E2)+E3`)
 E1 += E2 | add *E2* (copy) to *E1*
 E1 \| E2 | same as `E1 + E2`, but same as with python set notation
-E1 - E2 | a new Encyclopedia creating by removing elements of *E2* from *E1*.  
+E1 - E2 | a new Encyclopedia creating by removing elements of *E2* from *E1*.
 E1 & E2 | elements in both *E1* and *E2*, intersection.  This is equivalent to  `E1-(E1-E2)` in an *Unsigned* Encyclopedia, but note the lack of associativity: `(E1-E1) + E2 = E2 != E1 - (E1-E2)`.  For a *Signed* Encyclopedia, however (see below), associativity is preserved.
 f * E  | functional composition: f(E).  Apply *f* to elements of E returning another Encyclopedia. When *f* is a scalar assume function is multiplicative
 E \* f | equivalent to *f* * E
@@ -88,7 +85,7 @@ Notation | Meaning
 Unity[x] == x | existence of *unity*
 ~E | *multiplicative inverse* of E (reverse domain and range)
 (E\*~E)[x] == (~E\*E)[x] == x | Encyclopedia composed with its inverse produces Unity
-(Unity * E)[x] == E[x] | Unity composed with an Encyclopedia produces that Encyclopedia 
+(Unity * E)[x] == E[x] | Unity composed with an Encyclopedia produces that Encyclopedia
 
 # Ok, for instance?
 
@@ -96,7 +93,7 @@ An Encyclopedia is an abstract class.  Two *concrete* Encyclopedias are [Relatio
 
 A **Relation** is multi-valued extension of a Dictionary.  In addition to the functional (many-to-one, M:1) behavior of a Dictionary, a Relation supports all four *cardinalities*, specifically: M:1, 1:M, 1:1 and M:M.  Relations are invertible [^partially] providing direct mappings from values back to keys.
 
-[^partially]: all relations are "invertible" in the sense that domain/range may be swapped; however, relations composed with their inverse will only create Unity properly when the cardinality is 1:M or 1:1. 
+[^partially]: all relations are "invertible" in the sense that domain/range may be swapped; however, relations composed with their inverse will only create Unity properly when the cardinality is 1:M or 1:1.
 
 A **Forest** is a collection of trees.  Forests use the standard set/get for constructing Tree branches as well as common tree functions such as branch().  Forests may be combined with other Forests using set operations (*horizontal* combination) and be grown on top of other Forests using composition (*vertical* combination)
 
@@ -125,28 +122,28 @@ R1 * R2 | `{R1[x]:R1[R2[x]) for x in R2}` [^comprehension]
 
 ## Forest
 
-Forests are Encyclopedias formed from collections of trees.  A tree, in our parlance, grow "upwards", thus the greater heights of a Tree will be closer to the *leaves*. Each node in a Tree connects "upwards" to a collection of distinct nodes; conversely each node has at most a single, directly-connecting "lower" node.  
+Forests are Encyclopedias formed from collections of trees.  A tree, in our parlance, grow "upwards", thus the greater heights of a Tree will be closer to the *leaves*. Each node in a Tree connects "upwards" to a collection of distinct nodes; conversely each node has at most a single, directly-connecting "lower" node.
 
 The bracket notation of Forests allows for several nodes to be *referenced* by a single key, specifically:
 
     F[x] = y
-        
+
 means: create a new node, keyed by *y*, *for every* node that is keyed by *x*.  Similarly, The get notation:
 
     F[x]
-    
+
 Returns a Forest created from *all* subbranches in F with a root node keyed by *x*.  In particular, *nodes* within the Forest are unique; however, *keys* may reference multiple nodes.
 
 Forests form the topological foundation of many common hierarchical document formats e.g. XML, JSON, YAML etc...  Non-unique keys enable us to include repeated substructures.  For instance, the get notation in another context, namely when *y* is another forest:
 
     F1[x] = F2
 
-Grafts the F2 Forest to *all* occurrences of *x* within F1.  
+Grafts the F2 Forest to *all* occurrences of *x* within F1.
 
 An example of a related operation is a YAML alias.  This grafting can also be performed using composition notation:
 
     F1 * F2
-    
+
 Which means: create a new Forest such when F1 and F2 share a key *x*, the branches of F2[x] are grafted onto F1 at *x*.   An example of a related operation is when a library of subdocuments are instanced onto a document when ready for final document production.   The operations for a Forest are as follows:
 
 Notation | Meaning

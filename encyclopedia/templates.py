@@ -138,7 +138,7 @@ class Unity(Indexed):
     @Indexed.unfrozen
     def __delitem__(self, key):
         pass
-    
+
     @Indexed.unfrozen
     def __setitem__(self, key, value):
         pass
@@ -158,7 +158,7 @@ class Unity(Indexed):
 
     def __iter__(self):
         for i in range(0):
-            yield None        
+            yield None
 
     def __invert__(self):
         return self.copy()
@@ -223,27 +223,3 @@ class Zero(Signed):
 
     def __invert__(self):
         assert False # 1/0
-
-class Encyclopedia_Tests(unittest.TestCase):
-
-    def setUp(self):
-        self.unity = Unity()
-        self.zero = Zero()
-
-    def test_unity(self):
-        unity = self.unity
-        for thing in {1, 'thing', None}:
-            assert unity[thing] == thing
-            assert (unity*~unity)[thing] == thing
-            assert (~unity)[thing] == thing
-
-    def test_zero(self):
-        unity = self.unity
-        zero = self.zero
-        for thing in {1, 'thing', None}:
-            assert zero[thing] is None
-            assert (zero*unity)[thing] is None
-            assert (zero+unity)[thing] == thing
-
-if __name__ == '__main__':
-    unittest.main()
