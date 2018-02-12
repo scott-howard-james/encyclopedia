@@ -10,10 +10,11 @@ from encyclopedia import Arboretum, Function, Relation
 
 class XML():
     '''
-    Forest wrapper on elementTree XML implementation.
-    Stores a tree(forest) *in parallel* to elementTree structure
+    Forest syntax on top of elementTree XML implementation.
+    To avoid confusion, inherits from neither elementTree nor Arboretum directly
+    Note that the tree(forest) is stored *in parallel* to elementTree structure
     '''
-    FOLD = '/' # use this delimeter to create unique
+    FOLD = '/' # use this delimeter to create unique identifiers
 
     def __init__(self):
         self.counter=0
@@ -103,9 +104,6 @@ class XML():
     def __iter__(self):
         yield from self.iterate()
 
-    def __getitem__(self, key):
-        return self.elements[key]
-
     def __len__(self):
         return len(self.forest)
 
@@ -118,6 +116,9 @@ class XML():
     def above(self, key):
         yield from self.forest.above(key, aliased=True)
 
+    def nodes(self):
+        yield from self.forest.sorted(aliased=True)
+
 # writing/assigning functions
 
     def __delitem__(self, key):
@@ -129,6 +130,12 @@ class XML():
         self.elements[parent].remove(element)
         del self.forest[key]
         del self.elements[key]
+
+    def __getitem__(self, key):
+        if not isinstance(key,tuple):
+            return self.elements[key]
+        else:
+            return self.forest[key]
 
     def __setitem__(self, key, value):
         if not isinstance(key,tuple):
@@ -191,11 +198,11 @@ class XML_Tree_Tests(unittest.TestCase):
         xt['trunk'] = 'Document'
         for node in ['G1','G2']:
             xt['Document'] = folder = xt.unique('Folder')
-            xt[folder,'name'] = node + " thing"
+            xt[folder,'name'] = node + ' folder'
             xt[folder].set('id',node)
             for place in ['P1','P2']:
                 xt[folder] = placemark = xt.unique('Placemark')
-                xt[placemark,'name'] = place
+                xt[placemark,'name'] = place + ' placemark'
 
     def test_io(self):
         xt=self.xt

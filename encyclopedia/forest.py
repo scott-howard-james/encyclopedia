@@ -255,6 +255,7 @@ class Forest(Unindexed):
             twig: bool = False,
             offset: int = 0,
             identified: bool = True,
+            aliased: bool = False, # return just alias
         ):
         '''
         A topologically sorted node *list* (not iterator)
@@ -270,7 +271,11 @@ class Forest(Unindexed):
                 nodes = [(lower, upper) for lvl, lower, upper in nodes]
             else:
                 nodes = [node for lvl, node in nodes]
-        return sorted(nodes)
+        nodes = sorted(nodes)
+        if aliased:
+            return [node.alias for node in nodes]
+        else:
+            return nodes
 
     @unfrozen
     def __delitem__(self, node):
