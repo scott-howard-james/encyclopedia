@@ -136,13 +136,17 @@ class Forest(Unindexed):
                 raise KeyError
             yield from nodes
 
-    def above(self, alias):
+    def above(self,
+            alias, # start here
+            aliased = False, # return just alias
+            ):
         '''
         Generate nodes above node(s)
         '''
         for node in self.aliased(alias):
             if node in self.nodes:
-                yield from self.nodes[node]
+                for other in self.nodes[node]:
+                    yield other.alias if aliased else other
 
     def branches(self, alias):
         '''
@@ -151,13 +155,17 @@ class Forest(Unindexed):
         for node in self.above(alias):
             yield self[node]
 
-    def below(self, alias):
+    def below(self,
+        alias, # start here
+        aliased = False, # return just alias
+        ):
         '''
         Generate parent below node(s)
         '''
         for node in self.aliased(alias):
             if node in ~self.nodes:
-                yield (~self.nodes)[node]
+                next = (~self.nodes)[node]
+                yield next.alias if aliased else next
 
     def root(self, alias=None):
         '''
