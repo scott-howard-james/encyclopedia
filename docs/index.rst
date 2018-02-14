@@ -11,7 +11,10 @@ An Encyclopedia is an abstract container intended for smallish data sets which p
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
    readme
+   source/modules
+   source/encyclopedia
 
 Indices and tables
 ==================
