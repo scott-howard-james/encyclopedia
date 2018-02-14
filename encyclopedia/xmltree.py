@@ -6,7 +6,8 @@ import sys
 import unittest
 import xml.etree.ElementTree as et
 # internal
-from encyclopedia import Arboretum, Function, Relation
+from encyclopedia.arboretum import Arboretum
+from encyclopedia.relate import Function, Relation
 
 class XML():
     '''
@@ -190,7 +191,7 @@ class XML():
         else:
             _write(sys.stdout)
 
-class XML_Tree_Tests(unittest.TestCase):
+class Test_XML(unittest.TestCase):
 
     def setUp(self):
         self.xt = xt = XML()

@@ -2,12 +2,12 @@
 import unittest
 # external
 # internal
-from encyclopedia import Function, Forest
+from encyclopedia.relate import Function
+from encyclopedia.forest import Forest
 
 class Arboretum(Forest):
     '''
     A Forest with inhertiable attributes
-
     Note: as attributes are assigned using setitem syntax, tuples cannot be used as node aliases
     '''
 
@@ -46,36 +46,31 @@ class Test_Arboretum(unittest.TestCase):
     '''
     Arboretum regression tests go here
     '''
-
     def setUp(self):
-        self.f = f = Arboretum()
-        f += 'G01'
-        f['G01'] = 'G11'
-        f['G01'] = 'G12'
-        f['G11'] = 'G21'
-        f['G21'] = 'G31'
-        f['G21'] = 'G32'
-        f['G21'] = 'G33'
-        f['G32'] = 'G41'
-        f['G11','color'] = 'red'
-        f['G11','shape'] = 'diamond'
-        f['G01','shape'] = 'circle'
-        f['G21','color'] = 'blue'
-        f +=  'G02'
+        self.larch = larch = Arboretum()
+        larch += 'G01'
+        larch['G01'] = 'G11'
+        larch['G01'] = 'G12'
+        larch['G11'] = 'G21'
+        larch['G21'] = 'G31'
+        larch['G21'] = 'G32'
+        larch['G21'] = 'G33'
+        larch['G32'] = 'G41'
+        larch['G11','color'] = 'red'
+        larch['G11','shape'] = 'diamond'
+        larch['G01','shape'] = 'circle'
+        larch['G21','color'] = 'blue'
+        larch +=  'G02'
 
     def tearDown(self):
         pass
 
     def test_basic(self):
-        f = self.f
-        assert f['G01','shape'] == 'circle'
-        assert f['G12','shape'] == 'circle'
-        assert f['G32','color'] == 'blue'
-        assert f['G32','smell'] is None
+        larch = self.larch
+        assert larch['G01','shape'] == 'circle'
+        assert larch['G12','shape'] == 'circle'
+        assert larch['G32','color'] == 'blue'
+        assert larch['G32','smell'] is None
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
-

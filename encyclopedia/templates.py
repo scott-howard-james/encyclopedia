@@ -32,31 +32,14 @@ class Unindexed(MutableMapping):
                 return f(self, *args, **kw)
         return new
 
-    # absract methods ...
-
-    @abstractmethod
     @unfrozen
     def subtract(self, other):
         '''
-        Perform set difference.
-        Prototypical code follows:
+        Perform set difference.  Prototypical code:
         '''
-        for key, value in other.items():
+        for key in other:
             del self[key]
         return self
-
-    @abstractmethod
-    def compose(self, other):
-        '''
-        Perform functional or Encyclopedic composition.
-        Prototypical code follows:
-        '''
-        new = Unindexed()
-        for key, value in self.items():
-            output = other(value)
-            if output is not None:
-                new[key] = output
-        return new
 
     @staticmethod
     def identity(thing):
@@ -65,8 +48,6 @@ class Unindexed(MutableMapping):
         '''
         return thing
 
-    # other methods ...
-
     def copy(self):
         return copy.deepcopy(self)
 
@@ -74,7 +55,7 @@ class Unindexed(MutableMapping):
         '''
         Make encyclopedia immutable
         '''
-        new = self.copy()
+        new = copy.deepcopy(self)
         new.frozen = True
         return new
 
@@ -82,15 +63,17 @@ class Unindexed(MutableMapping):
         '''
         Make encyclopedia mutable
         '''
-        new = self.copy()
+        new = copy.deepcopy(self)
         new.frozen = False
         return new
 
     def __add__(self, other):
-        return self.copy().update(other)
+        new = copy.deepcopy(self)
+        new.update(other)
+        return new
 
     def __radd__(self, other):
-        return other.copy().self(other)
+        return self + other
 
     @unfrozen
     def __iadd__(self, other):
@@ -111,6 +94,16 @@ class Unindexed(MutableMapping):
 
     def __and__(self, other):
         return self - (self - other)
+
+    def compose(self, other):
+        '''
+        Perform functional or Encyclopedic composition. Prototypical code:
+        '''
+        new = self.__class__()
+        for key, value in self.items():
+            if value in other:
+                new[key] = other[value]
+        return new
 
     class Error(Exception):
         '''
@@ -224,7 +217,7 @@ class Zero(Signed):
     def __invert__(self):
         assert False # 1/0
 
-class Encyclopedia_Tests(unittest.TestCase):
+class Test_Encyclopedia(unittest.TestCase):
 
     def setUp(self):
         self.unity = Unity()

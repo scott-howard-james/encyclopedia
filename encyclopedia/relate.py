@@ -8,7 +8,7 @@ from encyclopedia.templates import Indexed, Unity, Zero
 
 class Relation(Indexed):
     '''
-    General purpose, discrete relation container for all mapping cardinalities:
+    General purpose, discrete relation container for all four mapping cardinalities:
 
         - 1:1 (Isomorphism)
         - 1:M (Immersion)
@@ -252,7 +252,7 @@ class Partition(Relation):
         Relation.__init__(self, init, cardinality='1:M', ordered=ordered)
 
 
-class Relation_Tests(unittest.TestCase):
+class Test_Relation(unittest.TestCase):
 
     def setUp(self):
         fruit = self.fruit = Relation(ordered=True)
@@ -267,9 +267,9 @@ class Relation_Tests(unittest.TestCase):
         fruit['pear'] = 'yellow'
         fruit['kiwi'] = 'green'
         fruit['kiwi'] = 'seedy'
-        amount = self.amount = Isomorphism(
+        self.amount = Isomorphism(
             {'pack': 5, 'bushel': 10, 'crate': 100})
-        colors = self.colors = Isomorphism(
+        self.colors = Isomorphism(
             {'red': (1, 0, 0), 'blue': (0, 1, 0), 'green': (0, 0, 1)})
 
     def test_basic(self):
@@ -302,24 +302,24 @@ class Relation_Tests(unittest.TestCase):
         assert len(fruit.items()) == len(fruit)
         assert fruit.get('armadillo') is None
         fruit.clear()
-        assert len(fruit) == 0
+        assert not fruit
         assert fruit.get('melon') is None
 
     def test_creation(self):
-        m = Isomorphism({'a': 1, 'b': 2, 'c': 11})
-        mp = ~m
-        assert mp[2] == 'b'
-        m = Function({'a': 1, 'b': 1, 'c': 11})
-        mp = ~m
-        assert mp[1] == {'b', 'a'}
-        m = Partition({'a': 1, 'b': 2, 'c': 11})
-        m['a'] = 3
-        mp = ~m
-        assert mp[1] == 'a'
-        assert mp[2] != 'a'
-        assert mp[3] == 'a'
+        mi = Isomorphism({'a': 1, 'b': 2, 'c': 11})
+        mr = ~mi
+        assert mr[2] == 'b'
+        mf = Function({'a': 1, 'b': 1, 'c': 11})
+        mr = ~mf
+        assert mr[1] == {'b', 'a'}
+        mp = Partition({'a': 1, 'b': 2, 'c': 11})
+        mp['a'] = 3
+        mr = ~mp
+        assert mr[1] == 'a'
+        assert mr[2] != 'a'
+        assert mr[3] == 'a'
 
-    def test_composite(self):
+    def test_update(self):
         fruits = {'apple': 'red', 'cherry': 'red',
                   'strawberry': 'red', 'banana': 'yellow'}
         fruit = Relation(fruits)
@@ -332,6 +332,10 @@ class Relation_Tests(unittest.TestCase):
         assert len(fruit) == len(even_more) + len(more) + len(fruits)
 
     def test_restrictions(self):
+        '''
+        Attack the underpinnings directly
+        NOTE: not suggested usage as this can make the Relations inconsistent/corrupt
+        '''
         fruit = Relation(cardinality='1:1')
         fruit['apple'] = 'red'
         fruit['pear'] = 'yellow'
@@ -341,9 +345,6 @@ class Relation_Tests(unittest.TestCase):
         assert 'apple' not in fruit
         fruit['papaya'] = 'green'
         assert 'watermelon' not in fruit
-
-        # NOTE: setting restriction directly; not suggested usage as this can
-        # make objects inconsistent.
 
         fruit.cardinality = 'M:1'
         fruit['papaya'] = 'green'
@@ -397,24 +398,40 @@ class Relation_Tests(unittest.TestCase):
         assert funny == fruit
 
     def test_freeze(self):
-        f = self.fruit
-        c = self.colors
-        f1 = f.copy()
+        f0 = self.fruit
+        f1 = f0.copy()
         f1['something'] = 'else'
         assert 'something' in f1
-        assert f1 != f
+        assert f1 != f0
         del f1['apple']
         assert 'apple' not in f1
         f2 = self.fruit.freeze()
         f2['something'] = 'else'
-        assert f2 == f
+        assert f2 == f0
         del f2['apple']
         assert 'apple' in f2
 
-    def test_crosss_product(self):
+    def test_cross_product(self):
         fruit = self.fruit
         colors = self.colors
         assert len(fruit.cross(colors)) == len(fruit) * len(colors)
+
+    def test_union(self):
+        '''
+        Examine different ways of combining Relations
+        '''
+        fruit = self.fruit
+        colors = self.colors
+        added = fruit + colors
+        assert len(added) == len(fruit) + len(colors)
+        assert isinstance(added, Relation)
+        unpacked = {**fruit, **colors}
+        assert len(unpacked) == len(fruit) + len(colors)
+        assert isinstance(unpacked, dict)
+        updated = fruit.copy().update(colors)
+        assert len(updated) == len(fruit) + len(colors)
+        assert updated == added
+        assert updated != unpacked
 
     def test_pipe(self):
         fruit = self.fruit
@@ -430,8 +447,8 @@ class Relation_Tests(unittest.TestCase):
         assert 'apple' in new
 
     def test_zero(self):
-        fruit=self.fruit
-        more=fruit+Zero()
+        fruit = self.fruit
+        more = fruit+Zero()
         for key in fruit:
             assert more[key] == fruit[key]
 
