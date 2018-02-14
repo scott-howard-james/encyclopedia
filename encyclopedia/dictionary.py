@@ -30,5 +30,9 @@ class Test_Dictionary(unittest.TestCase):
         third = first * second
         assert len(third) == len(second)
 
+        fruit = Dictionary({'apple':'red', 'blueberry':'blue'})
+        colors = Dictionary({'red':'FF0000', 'blue':'0000FF', 'green':'00FF00'})
+        assert fruit * colors == Dictionary({'apple': 'FF0000', 'blueberry': '0000FF'})
+
 if __name__ == '__main__':
     unittest.main()
