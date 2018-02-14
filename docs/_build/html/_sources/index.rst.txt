@@ -13,8 +13,6 @@ An Encyclopedia is an abstract container intended for smallish data sets which p
    :caption: Contents:
 
    readme
-   source/modules
-   source/encyclopedia
 
 Indices and tables
 ==================
