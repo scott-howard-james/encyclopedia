@@ -20,7 +20,7 @@ multi-valued assignments
 : keys may be *assigned* single values or *tagged* with multiple values
 
 inversion
-: Encyclopedias may be inverted such that their values map to their keys
+: Encyclopedias may swap their key-value pairs
 
 ## Say that Differently
 
@@ -36,11 +36,11 @@ So to say this yet another way, an Encyclopedia is a collection of key-value pai
 
 # Ok, But What is Good For?
 
-Data analysts have an [embarrassment of riches ](https://en.wikipedia.org/wiki/Embarrassment_of_riches) when it comes to manipulating their data.  We have multiple computation elements sitting on our laptop with immediate access to unlimited computational elements in the cloud.   We have various topologies to help access and store our data including: tabular (e.g. HDF5), relational (e.g. SQL) and non-relational (e.g. NoSQL).  We have data-analyst-friendly languages (e.g. python, R) with increasingly sophisticated libraries (e.g. [SciPy](https://www.scipy.org), [tidyverse](https://www.tidyverse.org)) to make it all fit together.
+Data analysts have an [embarrassment of riches ](https://en.wikipedia.org/wiki/Embarrassment_of_riches) when it comes to manipulating their data.  We have multiple computational elements sitting on our laptop and have immediate access to nearly unlimited computational elements in The Cloud.   We have various topologies to help access and store our data including: tabular (e.g. HDF5), relational (e.g. SQL) and non-relational (e.g. NoSQL).  We have data-analyst-friendly languages (e.g. python, R) with increasingly sophisticated libraries (e.g. [SciPy](https://www.scipy.org), [tidyverse](https://www.tidyverse.org)) to make it all fit together.
 
-On the more modest end of the data deluge resides the localized data: the tabular CSV reports, the hierarchical XML data elements and the binary, human-friendly tag clouds.   The Encylopedia syntax is intended to be used in this realm, providing a common syntax for the "smaller" data elements, providing a bridge between the scripting container elements (e.g. lists, dictionaries) and the larger data ocean.
+On the more modest end of the data deluge resides the localized data: the tabular CSV reports, the hierarchical XML data elements and the binary, human-friendly tag clouds.   The Encyclopedia syntax is intended to be used in this realm, providing a common syntax for the "smaller" data elements, providing a bridge between the scripting container elements (e.g. lists, dictionaries) and the larger data ocean.
 
-As an abstract class, Encyclopedia has limited value on its own.  Two *concrete* Encyclopedias however, are [Relations](https://simple.wikipedia.org/wiki/Relation_(mathematics)) and [Forests](https://en.wikipedia.org/wiki/Tree_(graph_theory)), which were the motivators for the creation of the Encyclopedia abstraction.   The implementations for these, as well as the Encyclopedia template, can be found [here](https://github.com/scott-howard-james/encyclopedia).  
+As an abstract class, Encyclopedia has limited value on its own.  Two *concrete* Encyclopedias however, are [Relations](https://simple.wikipedia.org/wiki/Relation_(mathematics)) and [Forests](https://en.wikipedia.org/wiki/Tree_(graph_theory)), which were the motivators for the creation of the Encyclopedia abstraction.  
 
 ## Relation
 
@@ -120,19 +120,17 @@ See the [paper from SciPy 2015](https://github.com/scott-howard-james/relate/wik
 
  Syntactically a tree, in our parlance, will grow "upwards"; thus the greater heights of a tree will be closer to the "leaves".  Each *node* in a tree connects upwards to a collection of distinct nodes; conversely each node has at most a single, directly-connecting lower node.  Forests may be combined with other Forests using set operations (*horizontal combination*), and be grown on top of other Forests using composition (*vertical combination*). 
 
-Sub-branches of Forests are obtained through the bracket get notation:
+Sub-branches of Forests are obtained through the bracket "get" notation:
 
 	    F[x]
 
-However, an important subtley to note is the *keys* used in this bracket selection are different than *nodes*.   In particular, *nodes* within a  Forest are unique; however, *keys* may reference multiple nodes; that is, there is a many-to-one relationship between keys and nodes.  Thus the bracket-get returns *all* sub-branches in F with a root node *keyed* by *x*. 
+Note that the *keys* used in this bracket notation are different than *nodes*.   In particular, *nodes* within a  Forest are unique; however, *keys* may reference multiple nodes.  Therefore, there is a many-to-one relationship between keys and nodes; thus, the "get" returns *all* sub-branches in F with a root node *keyed* by *x*. 
  
-  
-To construct new branches, Forests use the set bracket notation.  The bracket notation of Forests allows for several nodes to be *referenced* by a single key, specifically:
+To construct new branches, Forests use the "set" bracket notation.  The bracket notation of Forests allows for several nodes to be *referenced* by a single key, specifically:
 
     	F[x] = y
 
 means: create a new node, keyed by *y*, *for every* node that is keyed by *x*.  
-
 
 Forests form the topological foundation of many common hierarchical document formats e.g. XML, JSON, YAML etc...  Non-unique keys enable us to include repeated substructures.  For instance, the get notation in another context, namely when *y* is another forest:
 
@@ -155,19 +153,19 @@ F.values() | all *nodes* within Forest
 F.canopy() | union of all leaf nodes in Forest
 F.root(x) | return node(s) of Tree root containing *x*
 F1 + F2 | combine two Forests such that common Trees within both Forests will only appear once (*union*)
-F1 - F2 | remove Trees contained in *F2* from *F1* (*diference*)
+F1 - F2 | remove Trees contained in *F2* from *F1* (*difference*)
 F1 * F2  | for each *x* key common to *F1* and *F2*: graft *F2* onto *F1* at *x*.
 f * F  | apply f to each node of F
 
-An extension of a Forest is an **Arboretum**, which is a Forest with inheritable node attributes.  Attributes are assigned using the second position in the bracket assignment, namely:
+An extension of a Forest is an Arboretum:  a Forest with inheritable node attributes.  Attributes are assigned using the second position in the bracket assignment, namely:
 
 		F[x, attribute] = value
 		
-To restate, this assigns the key-value pair *(attribute, value)* to *x* as well as all of the nodes above *x*.  Retrieving an attribute works using the same syntax:
+This assigns the key-value pair *(attribute, value)* directly to *x* as well as implicitly to the nodes above *x*.  Retrieving attributes is dynamic:
 
 		F[x, attribute]
 
-Retrieving attributes is dynamic, meaning, the tree is searched for an attribute starting at the node and descending down the tree a parent is found with the assignment.  As a motivating example, suppose we had a hierarchical document,  like the following:
+meaning, the tree is searched for an attribute starting at the node and descending down the tree until a parent is found with the assignment.  As a motivating example, suppose we had a hierarchical document:
 
 		F['Document'] = 'Section 1'
 		F['Section 1'] = 'Section 1.1'
@@ -176,11 +174,11 @@ Assigning the font
 
 		F['Section 1', 'font'] = 'Helvetica'
 
-Will affect *Section 1* and *Section 1.1*  but will not affect the overall document.  Similarly, a new section created at the *Document* level
+will affect *Section 1* and *Section 1.1*  but will not affect the overall document.  A new section created at the *Document* level
 
 		F['Document'] = 'Section 2'
 		
-will also be unaffected by the font assignment but further subsections below *Section 1.1* 
+will be unaffected by the font assignment but further subsections below *Section 1.1* 
 
 		F['Section 1.1'] = 'Section 1.1.1'
 
@@ -188,7 +186,7 @@ will have their default font set.
 
 ## Dictionary
 
-Another example of an Encyclopedia is simply a python dictionary which has been Encyclopedia-ified.  This new dictionary will behave much like its derived *dict* but will also support arithmetic set operations and composition.  As an example, if:
+Another example of an Encyclopedia is simply a python dictionary which has been Encyclopedia-ified.  This new dictionary will behave much like its derived *dict* but will also support arithmetic set operations and composition.  As an example of the composition feature, if:
 
         fruit = Dictionary({'apple':'red', 'blueberry':'blue'})
         colors = Dictionary({'red':'FF0000', 'blue':'0000FF', 'green':'00FF00'})
@@ -199,7 +197,7 @@ then
 
 # Encyclopedia Operations
 
-It might be illustrative (at least for those of us who *like* looking at summary tables) to now show an overview of operations for an Encyclopedia:
+It may be illustrative (at least for those of us who *like* looking at summary tables) to now show an overview of operations for an Encyclopedia:
 
 Operation | Description
  ---  |  ---
@@ -220,7 +218,7 @@ may not *overwrite* the key's value, but instead *append* to the key value or *t
 
     	E[x]
 
-may produce a set (or list) of values corresponding to the key.
+may produce a set (or list) of values corresponding to the key.  
 
 For the math-letes, note that encyclopedia addition is inherently commutative:
 
@@ -240,13 +238,13 @@ but it is distributive[^composition]:
 		
 as functions act element-wise on the keys.
 
-## Signed Encyclopedias
+## Signed Encyclopedia
 
 An Encyclopedia is not a proper ring without the existence of a negative signed Encyclopedia:
 
 		-E
 		
-Note that we specifically refer to the [unary](https://docs.python.org/3/reference/expressions.html)  operation and not the binary set difference.  Note too that this is a little conceptually unusual, as a negative encyclopedia behaves a bit like [antimatter](https://en.wikipedia.org/wiki/Antimatter), able to negate a collection of key-values, but not necessarily  to serve meaningful mapping in our eminently practical universe.  If the unary negative sign is supported by a derived Encyclopedia, the class will be known as a **Signed Encyclopedia**,  and the following features will also be supported:
+Note that we specifically refer to the [unary](https://docs.python.org/3/reference/expressions.html)  operation and not the binary set difference.  Note too that this is a little conceptually unusual, as a negative encyclopedia behaves a bit like [antimatter](https://en.wikipedia.org/wiki/Antimatter), able to negate a collection of key-values, but not necessarily  to serve as a meaningful mapping in our eminently practical universe.  If the unary negative sign is supported by a derived Encyclopedia, the class will be known as a **Signed Encyclopedia**,  and the following features will also be supported:
 
 Identity | Field
  ---  |  ---
@@ -257,7 +255,7 @@ abs(E1-E2) + abs(E2-E1) | *symmetric difference*
 (Null + E)[x] == E[x] | *additive identity*
 (E - E)[x] == Null[x] | *additive inverse*
 
-One important distinction between a Signed Encyclopedia and an Unsigned Enclopedia is the implementation of the intersection.  For an Unsigned Encyclopedia, we may simply remove the elements of `E1` which are not in `E2`:
+One important distinction between a Signed Encyclopedia and an Unsigned Encyclopedia is the implementation of the intersection.  For an Unsigned Encyclopedia, we may simply remove the elements of `E1` which are not in `E2`:
 
 		E1&E2 == E1-(E1-E2)
 
@@ -269,7 +267,7 @@ Instead we must use the Signed Encyclopedia's *abs* operator to remove the negat
 
 		E1&E2 == E1-abs(E1-E2)
 
-## Indexed Encyclopedias
+## Indexed Encyclopedia
 
 When a multiplicative inverse:
 
@@ -292,8 +290,9 @@ Unity[x] == x | existence of *unity*
 (E\*~E)[x] == (~E\*E)[x] == x | Encyclopedia composed with its inverse produces Unity
 (Unity * E)[x] == E[x] | Unity composed with an Encyclopedia produces that Encyclopedia
 
+# Past, Present and Future
 
-# Past Breadcrumbs and (Near) Future Plans
+## Past
 
 As with many abstract types, the concept of Encyclopedia did not emerge from the void ready to be forward instantiated, but rather resulted from the backwards abstraction of specific, concrete implementations (not surprisingly to anyone following along at this point): Relations and Forests. These classes, in turn, were created to scratch particular itches:
 
@@ -302,16 +301,31 @@ As with many abstract types, the concept of Encyclopedia did not emerge from the
 
 Syntax may not be everything, but it helps.  A lot.  As many data analysts have found, being able to express  something conveniently may determine whether  the analysis gets done *at all*.   Indeed, much of the power of scripting languages, including python, is the ability to express more complex structures, since the foundational structures (e.g. lists, sets, dictionaries) are so easy to describe.
 
-Addressing Forests specifically, there are a number of different hierachical structures (e.g. YAML, XML, JSON) which are each essentially trees, topologically, but are supported by different packages and syntaxes.  Moreover, with regard to content generation, they sometimes lack the syntax for easily building more complex trees from simpler ones,  such as, mentioned above, combining two trees either as a simple union or recursively, with one tree nested inside the other.  
+Addressing Forests specifically, there are a number of different hierarchical structures (e.g. YAML, XML, JSON) which are each essentially trees, topologically, but are supported by different packages and syntaxes.  Moreover, with regard to content generation, they sometimes lack the syntax for easily building more complex trees from simpler ones,  such as, mentioned above, combining two trees either as a simple union or recursively, with one tree nested inside the other.  
 
-The Encyclopedia specification, as well as implementations for:
+## Present
+
+The Encyclopedia specification, and implementations for:
 
 - Relation 
 - Forest
 - Arboretum
 - Dictionary (with a capital "D")
 
-can be found [here](https://github.com/scott-howard-james/encyclopedia).  Additionally, a light wrapper is included for XML that provides Encyclopedia syntax to the elementTree XML implementation.  In the near-future, wrappers will be included for YAML and JSON.
+as well as  an:
+
+- Encyclopedic wrapper for XML
+
+Can be obtained at 
+
+-  Github:  [https://github.com/scott-howard-james/encyclopedia](https://github.com/scott-howard-james/encyclopedia)
+-  PyPi: [https://pypi.python.org/pypi/encyclopedia/0.25](https://pypi.python.org/pypi/encyclopedia/0.25) (or alternatively  just `pip encyclopedia`)
+
+Note that Encyclopedia has no dependencies outside of the standard python distribution.
+
+## Future
+
+In the near-future, wrappers will be included for YAML and JSON.  Additionally, support for other graph types will be added.
 
 [^scaled]: when *f* is a scalar, assume function is multiplicative
 
