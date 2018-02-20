@@ -6,6 +6,7 @@ API Reference
 
     ~encyclopedia.Unindexed
     ~encyclopedia.Indexed
+    ~encyclopedia.Arboretum
 
 
 Unindexed Encyclopedia
@@ -19,3 +20,9 @@ Indexed Encyclopedia
 -----
 
 .. autoclass:: encyclopedia.Indexed
+
+Arboretum
+-----
+
+.. autoclass:: encyclopedia.Arboretum
+
