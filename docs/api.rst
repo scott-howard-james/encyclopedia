@@ -14,6 +14,7 @@ Unindexed Encyclopedia
 
 .. autoclass:: encyclopedia.Unindexed
     :members:
+        compose, melt
 
 
 Indexed Encyclopedia
