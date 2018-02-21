@@ -34,7 +34,7 @@ In math-speak, a collection of Encyclopedias is a similar to a mathematical [rin
 
 So to say this yet another way, an Encyclopedia is a collection of key-value pairs which may be combined with other Encyclopedias using set operations and functional operators.
 
-# Ok, But What is Good For?
+# Ok, But What is it Good For?
 
 Data analysts have an [embarrassment of riches ](https://en.wikipedia.org/wiki/Embarrassment_of_riches) when it comes to manipulating their data.  We have multiple computational elements sitting on our laptop and have immediate access to nearly unlimited computational elements in The Cloud.   We have various topologies to help access and store our data including: tabular (e.g. HDF5), relational (e.g. SQL) and non-relational (e.g. NoSQL).  We have data-analyst-friendly languages (e.g. python, R) with increasingly sophisticated libraries (e.g. [SciPy](https://www.scipy.org), [tidyverse](https://www.tidyverse.org)) to make it all fit together.
 
