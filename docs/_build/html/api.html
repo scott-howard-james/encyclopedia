@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Abstract Encyclopedias &mdash; Encyclopedia .25 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Encyclopedia .25 documentation" href="index.html"/>
+        <link rel="prev" title="Overview" href="brieftour.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Encyclopedia
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                .25
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">A Brief Tour</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="brieftour.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brieftour.html#ok-but-what-is-it-good-for">Ok, But What is it Good For?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brieftour.html#encyclopedia-operations">Encyclopedia Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brieftour.html#past-present-and-future">Past, Present and Future</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Abstract Encyclopedias</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unindexed-encyclopedia">Unindexed Encyclopedia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#indexed-encyclopedia">Indexed Encyclopedia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signed-encyclopedia">Signed Encyclopedia</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#concrete-encyclopedias">Concrete Encyclopedias</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dictionary">Dictionary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#relation">Relation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#forest">Forest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arboretum">Arboretum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xml">XML</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Encyclopedia</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Abstract Encyclopedias</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="abstract-encyclopedias">
+<h1>Abstract Encyclopedias<a class="headerlink" href="#abstract-encyclopedias" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="unindexed-encyclopedia">
+<h2>Unindexed Encyclopedia<a class="headerlink" href="#unindexed-encyclopedia" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.Unindexed">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">Unindexed</code><a class="headerlink" href="#encyclopedia.Unindexed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">collections.abc.MutableMapping</span></code></p>
+<p>an <em>Unindexed Encyclopedia</em> extends a <em>MutableMapping</em> with the following features:</p>
+<ul class="simple">
+<li><strong>composition</strong>: Encyclopedia contents may be altered by functions or Encyclopedias</li>
+<li><strong>set operation</strong>: Encyclopedias may be combined using union, difference and intersection</li>
+<li><strong>mutability</strong>: ability to “freeze” and “melt” an object, that is, change its mutability</li>
+</ul>
+<dl class="method">
+<dt id="encyclopedia.Unindexed.__add__">
+<code class="descname">__add__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Unindexed.__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>create union with this encyclopedia and another</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Unindexed.__mul__">
+<code class="descname">__mul__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Unindexed.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>compose encyclopedia with another object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Unindexed.__sub__">
+<code class="descname">__sub__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Unindexed.__sub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform set difference of this encyclopedia and other</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Unindexed.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Unindexed.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform a “deep” copy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Unindexed.freeze">
+<code class="descname">freeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Unindexed.freeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>make encyclopedia immutable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Unindexed.melt">
+<code class="descname">melt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Unindexed.melt" title="Permalink to this definition">¶</a></dt>
+<dd><p>make encyclopedia mutable</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indexed-encyclopedia">
+<h2>Indexed Encyclopedia<a class="headerlink" href="#indexed-encyclopedia" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.Indexed">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">Indexed</code><a class="headerlink" href="#encyclopedia.Indexed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">encyclopedia.templates.Unindexed</span></code></p>
+<p>An <strong>Indexed</strong> Encyclopedia may be inverted such that its values map to their keys</p>
+<dl class="method">
+<dt id="encyclopedia.Indexed.__invert__">
+<code class="descname">__invert__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Indexed.__invert__" title="Permalink to this definition">¶</a></dt>
+<dd><p>invert the Encyclopedia</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="signed-encyclopedia">
+<h2>Signed Encyclopedia<a class="headerlink" href="#signed-encyclopedia" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.Signed">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">Signed</code><a class="headerlink" href="#encyclopedia.Signed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">encyclopedia.templates.Indexed</span></code></p>
+<p>An <em>Signed</em> Encyclopedia* may be inverted, that is, values map to their keys</p>
+<dl class="method">
+<dt id="encyclopedia.Signed.__abs__">
+<code class="descname">__abs__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Signed.__abs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>de-negative this encyclopedia</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Signed.__and__">
+<code class="descname">__and__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Signed.__and__" title="Permalink to this definition">¶</a></dt>
+<dd><p>intersect using signed logic</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Signed.__neg__">
+<code class="descname">__neg__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Signed.__neg__" title="Permalink to this definition">¶</a></dt>
+<dd><p>negate this encyclopedia</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="concrete-encyclopedias">
+<h1>Concrete Encyclopedias<a class="headerlink" href="#concrete-encyclopedias" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="dictionary">
+<h2>Dictionary<a class="headerlink" href="#dictionary" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.Dictionary">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">Dictionary</code><span class="sig-paren">(</span><em>mapping=None</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal"><span class="pre">encyclopedia.templates.Unindexed</span></code></p>
+<dl class="attribute">
+<dt id="encyclopedia.Dictionary.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#encyclopedia.Dictionary.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="relation">
+<h2>Relation<a class="headerlink" href="#relation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.Relation">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">Relation</code><span class="sig-paren">(</span><em>init=None</em>, <em>cardinality='M:M'</em>, <em>ordered=False</em>, <em>frozen=False</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Relation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">encyclopedia.templates.Indexed</span></code></p>
+<p>General purpose, discrete relation container for all four mapping cardinalities:</p>
+<blockquote>
+<div><ul class="simple">
+<li>1:1 (<em>Isomorphism</em>)</li>
+<li>1:M (<em>Immersion</em>)</li>
+<li>M:1 (<em>Function</em> e.g. Python Dictionary)</li>
+<li>M:M (<em>General Relation</em>)</li>
+</ul>
+</div></blockquote>
+<p>Inversion, for all cardinalities, is provided (at the cost of doubled storage)</p>
+<dl class="exception">
+<dt id="encyclopedia.Relation.Error">
+<em class="property">exception </em><code class="descname">Error</code><a class="headerlink" href="#encyclopedia.Relation.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">encyclopedia.templates.Error</span></code></p>
+<p>label Relation exceptions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Relation.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>init=None</em>, <em>cardinality='M:M'</em>, <em>ordered=False</em>, <em>frozen=False</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Relation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a new Relation using a variety of different inputs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Relation.__invert__">
+<code class="descname">__invert__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Relation.__invert__" title="Permalink to this definition">¶</a></dt>
+<dd><p>NOTE: Relation inversion uses references instead of copies</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Relation.__setitem__">
+<code class="descname">__setitem__</code><span class="sig-paren">(</span><em>domain</em>, <em>target</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Relation.__setitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>for 1:M and M:M cardinalities, <em>add</em> key-value pairs;
+for 1:1 and M:1 cardinalities, <em>overwrite</em> key-value pairs when same key</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Relation.compose">
+<code class="descname">compose</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Relation.compose" title="Permalink to this definition">¶</a></dt>
+<dd><p>compose relation with another relation or a function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Relation.subtract">
+<code class="descname">subtract</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Relation.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>implement set difference</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Relation.unfrozen">
+<code class="descname">unfrozen</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Relation.unfrozen" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator to check if object is unfrozen</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="forest">
+<h2>Forest<a class="headerlink" href="#forest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.Forest">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">Forest</code><span class="sig-paren">(</span><em>offset: int = 0</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">encyclopedia.templates.Unindexed</span></code></p>
+<p>An Encyclopedia of  trees &lt;<a class="reference external" href="https://en.wikipedia.org/wiki/Tree_(graph_theory)">https://en.wikipedia.org/wiki/Tree_(graph_theory)</a>&gt;</p>
+<p>Note that there is no specific “Tree” class; instead, a Tree is Forest with a single
+connected (tree) graph.  This is purposeful as adding two Trees creates a Forest, not another Tree.</p>
+<p>Terminology for this class:</p>
+<ul class="simple">
+<li><em>Tree</em>: single, connected (tree) graph</li>
+<li><em>Forest</em>: a (possibly empty) collection of Trees, supporting Unindexed Encyclopedia operations</li>
+<li><em>Node</em>: a single node in a graph</li>
+<li><em>Twig</em>: a connected pair of nodes</li>
+<li><em>Sprout</em>: a new, connected node</li>
+</ul>
+<dl class="class">
+<dt id="encyclopedia.Forest.Node">
+<em class="property">class </em><code class="descname">Node</code><span class="sig-paren">(</span><em>alias</em>, <em>id</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>store the non-unique alias and the unique ID for a Node</p>
+<dl class="method">
+<dt id="encyclopedia.Forest.Node.identified">
+<code class="descname">identified</code><span class="sig-paren">(</span><em>identified: bool</em>, <em>off: int = 0</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.Node.identified" title="Permalink to this definition">¶</a></dt>
+<dd><p>return either an offset Node ID or simply the alias</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.above">
+<code class="descname">above</code><span class="sig-paren">(</span><em>alias</em>, <em>aliased=False</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.above" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate nodes above aliased node(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.aliased">
+<code class="descname">aliased</code><span class="sig-paren">(</span><em>alias=None</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.aliased" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate set of nodes referenced by an alias</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.below">
+<code class="descname">below</code><span class="sig-paren">(</span><em>alias</em>, <em>aliased=False</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.below" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate parent below aliased node(ss)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.branches">
+<code class="descname">branches</code><span class="sig-paren">(</span><em>alias</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>return branches (e.g. Trees) above the aliased node(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.climb">
+<code class="descname">climb</code><span class="sig-paren">(</span><em>alias=None</em>, <em>level: bool = False</em>, <em>twig: bool = False</em>, <em>identified: bool = True</em>, <em>offset: int = 0</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.climb" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate tree of nodes reacheable from alias</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.compose">
+<code class="descname">compose</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.compose" title="Permalink to this definition">¶</a></dt>
+<dd><p>composition depends on context of “other”:</p>
+<ul class="simple">
+<li>scaled by integers</li>
+<li>acted upon by functions</li>
+<li>grafted with Forests</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.cutting">
+<code class="descname">cutting</code><span class="sig-paren">(</span><em>alias=None</em>, <em>identified: bool = True</em>, <em>offset: int = 0</em>, <em>morph: function = &lt;function Unindexed.identity&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.cutting" title="Permalink to this definition">¶</a></dt>
+<dd><p>return subforest rooted at alias</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.graft">
+<code class="descname">graft</code><span class="sig-paren">(</span><em>forest</em>, <em>alias=None</em>, <em>identified: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.graft" title="Permalink to this definition">¶</a></dt>
+<dd><p>glue forest onto another forest at aliased node(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.height">
+<code class="descname">height</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum height (of all nodes in Forest)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.leaves">
+<code class="descname">leaves</code><span class="sig-paren">(</span><em>alias=None</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.leaves" title="Permalink to this definition">¶</a></dt>
+<dd><p>return leaves reachable from alias</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.limb">
+<code class="descname">limb</code><span class="sig-paren">(</span><em>alias</em>, <em>offset: int = 0</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.limb" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the tree (single line of nodes) below aliased node(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.root">
+<code class="descname">root</code><span class="sig-paren">(</span><em>alias=None</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>return tree root of aliased node(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.sorted">
+<code class="descname">sorted</code><span class="sig-paren">(</span><em>alias=None</em>, <em>level: bool = False</em>, <em>twig: bool = False</em>, <em>offset: int = 0</em>, <em>identified: bool = True</em>, <em>aliased: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.sorted" title="Permalink to this definition">¶</a></dt>
+<dd><p>return topologically sorted node <em>list</em> (not iterator)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.sprout">
+<code class="descname">sprout</code><span class="sig-paren">(</span><em>alias</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.sprout" title="Permalink to this definition">¶</a></dt>
+<dd><p>make a unique node identifier (referenced by an alias)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.subtract">
+<code class="descname">subtract</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform set difference when “other” is a Forest;
+otherwise, delete element</p>
+<p>Note: Encyclopedia mixin</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.unfrozen">
+<code class="descname">unfrozen</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.unfrozen" title="Permalink to this definition">¶</a></dt>
+<dd><p>decorator to check if object is unfrozen</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.unique">
+<code class="descname">unique</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>eliminate duplicate trees in a forest</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform set union when “other” is a Forest; otherwise, add a new tree</p>
+<p>Note: MutableMapping mixin</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="encyclopedia.Forest.values">
+<code class="descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Forest.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>implicit by __getitem__ (mixin) but implemented for performance reasons</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="arboretum">
+<h2>Arboretum<a class="headerlink" href="#arboretum" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.Arboretum">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">Arboretum</code><span class="sig-paren">(</span><em>offset: int = 0</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.Arboretum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">encyclopedia.forest.Forest</span></code></p>
+<p>A Forest with inhertiable attributes</p>
+<p>Note: as attributes are assigned using setitem syntax, tuples cannot be used as node aliases</p>
+</dd></dl>
+
+</div>
+<div class="section" id="xml">
+<h2>XML<a class="headerlink" href="#xml" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="encyclopedia.XML">
+<em class="property">class </em><code class="descclassname">encyclopedia.</code><code class="descname">XML</code><a class="headerlink" href="#encyclopedia.XML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forest syntax combined with an elementTree XML implementation.
+To avoid confusion, inherits from neither elementTree nor Arboretum directly,
+thus the tree(forest) is stored <em>in parallel</em> to the elementTree structure</p>
+<dl class="method">
+<dt id="encyclopedia.XML.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>filename=None</em>, <em>doctype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.XML.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Note: will add tabs for pretty-printing</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="brieftour.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Scott Howard James.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'.25',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
