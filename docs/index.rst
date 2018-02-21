@@ -8,7 +8,7 @@ An Encyclopedia is an abstract container intended for smallish data sets which p
    :maxdepth: 1
    :caption: A Brief Tour
 
-   readme
+   brieftour.rst
 
 .. toctree::
    :maxdepth: 2
