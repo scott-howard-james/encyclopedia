@@ -8,18 +8,18 @@ from encyclopedia.relate import Relation
 
 class Forest(Unindexed):
     '''
-    An Encyclopedia of [trees](https://en.wikipedia.org/wiki/Tree_(graph_theory)#Forest)
+    An Encyclopedia of  trees <https://en.wikipedia.org/wiki/Tree_(graph_theory)>
 
     Note that there is no specific "Tree" class; instead, a Tree is Forest with a single
     connected (tree) graph.  This is purposeful as adding two Trees creates a Forest, not another Tree.
 
     Terminology for this class:
 
-    - Tree: single, connected (tree) graph
-    - Forest: a (possibly empty) collection of Trees, supporting Unindexed Encyclopedia operations
-    - Node: a single node in a graph
-    - Twig: a connected pair of nodes
-    - Sprout: a new, connected node
+    - *Tree*: single, connected (tree) graph
+    - *Forest*: a (possibly empty) collection of Trees, supporting Unindexed Encyclopedia operations
+    - *Node*: a single node in a graph
+    - *Twig*: a connected pair of nodes
+    - *Sprout*: a new, connected node
 
     '''
     def __init__(self,
@@ -40,13 +40,13 @@ class Forest(Unindexed):
 
     def __iter__(self):
         '''
-        Notes: creates Forest.keys() via mixin
+        creates Forest.keys() via mixin
         '''
         yield from self.aliases.keys()
 
     def __contains__(self, alias):
         '''
-        Implicit by __getitem__ (mixin) but implemented for performance reasons
+        implicit by __getitem__ (mixin) but implemented for performance reasons
         '''
         if isinstance(alias, Forest.Node):
             return alias in self.aliases.values()
@@ -55,7 +55,7 @@ class Forest(Unindexed):
 
     def values(self):
         '''
-        Implicit by __getitem__ (mixin) but implemented for performance reasons
+        implicit by __getitem__ (mixin) but implemented for performance reasons
         '''
         return self.aliases.values()
 
@@ -79,7 +79,7 @@ class Forest(Unindexed):
 
     class Node():
         '''
-        Store the (non-unique) alias and its (unique) ID for a Node
+        store the non-unique alias and the unique ID for a Node
         '''
         def __init__(self, alias, id):
             self.alias = Forest.Node.deid(alias)
@@ -112,20 +112,20 @@ class Forest(Unindexed):
                 off: int=0,
             ):
             '''
-            Return either an offset Node ID or simply the alias
+            return either an offset Node ID or simply the alias
             '''
             return self.offset(off) if identified else self.alias
 
     def sprout(self, alias):
         '''
-        Make a unique node identifier referenced by an alias
+        make a unique node identifier (referenced by an alias)
         '''
         self.counter += 1
         return Forest.Node(alias, self.counter)
 
     def aliased(self, alias=None):
         '''
-        Generate set of nodes referenced by alias
+        generate set of nodes referenced by an alias
         '''
         for alias in self.trees if alias is None else {alias}:
             if isinstance(alias, Forest.Node):
@@ -141,7 +141,7 @@ class Forest(Unindexed):
             aliased = False, # return just alias
             ):
         '''
-        Generate nodes above node(s)
+        generate nodes above aliased node(s)
         '''
         for node in self.aliased(alias):
             if node in self.nodes:
@@ -150,7 +150,7 @@ class Forest(Unindexed):
 
     def branches(self, alias):
         '''
-        Return branches (e.g. Trees) above the node(s)
+        return branches (e.g. Trees) above the aliased node(s)
         '''
         for node in self.above(alias):
             yield self[node]
@@ -160,7 +160,7 @@ class Forest(Unindexed):
         aliased = False, # return just alias
         ):
         '''
-        Generate parent below node(s)
+        generate parent below aliased node(ss)
         '''
         for node in self.aliased(alias):
             if node in ~self.nodes:
@@ -169,7 +169,7 @@ class Forest(Unindexed):
 
     def root(self, alias=None):
         '''
-        Return tree root of node(s)
+        return tree root of aliased node(s)
         '''
         for node in self.aliased(alias):
             if node in self.trees:
@@ -180,7 +180,7 @@ class Forest(Unindexed):
 
     def leaves(self, alias=None):
         '''
-        Return leaves reachable from  alias
+        return leaves reachable from alias
         '''
         for node in self.aliased(alias):
             if node not in self.nodes:
@@ -219,7 +219,7 @@ class Forest(Unindexed):
             offset: int = 0, # add offset to node ID
         ):
         '''
-        Generate tree of nodes reacheable from alias
+        generate tree of nodes reacheable from alias
         '''
         def idd(node):
             '''
@@ -258,7 +258,7 @@ class Forest(Unindexed):
             aliased: bool = False, # return just alias
         ):
         '''
-        A topologically sorted node *list* (not iterator)
+        return topologically sorted node *list* (not iterator)
         '''
         nodes = list(
             self.climb(alias,
@@ -305,7 +305,7 @@ class Forest(Unindexed):
             morph: types.FunctionType = Unindexed.identity, # modify keys/values upon entry
         ):
         '''
-        Return subforest rooted at alias
+        return subforest rooted at alias
         '''
         def morphed(node):
             if isinstance(node, Forest.Node):
@@ -335,7 +335,7 @@ class Forest(Unindexed):
             offset: int = 0
         ):
         '''
-        Return the tree (single line of nodes) below node(s)
+        return the tree (single line of nodes) below aliased node(s)
         '''
         def gravity(node):
             yield node
@@ -360,7 +360,7 @@ class Forest(Unindexed):
             identified: bool = True,
         ):
         '''
-        Glue forest onto another forest at node(s)
+        glue forest onto another forest at aliased node(s)
         '''
         def grow(offset):
             for lower, upper in forest.sorted(
@@ -395,8 +395,7 @@ class Forest(Unindexed):
     @unfrozen
     def update(self, other):
         '''
-        Perform set union when "other" is a Forest;
-        otherwise, add a new tree
+        perform set union when "other" is a Forest; otherwise, add a new tree
 
         Note: MutableMapping mixin
         '''
@@ -428,7 +427,7 @@ class Forest(Unindexed):
 
     def unique(self):
         '''
-        Eliminate duplicate trees in a forest
+        eliminate duplicate trees in a forest
         '''
         new = self.copy()
         trees = sorted(list(self.trees))
@@ -443,11 +442,11 @@ class Forest(Unindexed):
 
     def compose(self, other):
         '''
-        Composition depends on context of "other":
+        composition depends on context of "other":
 
-        - Scaled by integers
-        - Acted upon by functions
-        - Grafted with Forests
+        - scaled by integers
+        - acted upon by functions
+        - grafted with Forests
         '''
         new = self.copy()
         if isinstance(other, int):

@@ -10,10 +10,10 @@ class Relation(Indexed):
     '''
     General purpose, discrete relation container for all four mapping cardinalities:
 
-        - 1:1 (Isomorphism)
-        - 1:M (Immersion)
-        - M:1 (Function e.g. Python Dictionary)
-        - M:M (General Relation)
+        - 1:1 (*Isomorphism*)
+        - 1:M (*Immersion*)
+        - M:1 (*Function* e.g. Python Dictionary)
+        - M:M (*General Relation*)
 
     Inversion, for all cardinalities, is provided (at the cost of doubled storage)
     '''
@@ -37,7 +37,7 @@ class Relation(Indexed):
         frozen=False, # immediately make it immutable?
         ):
         '''
-        Create a new Relation using a variety of different inputs
+        create a new Relation using a variety of different inputs
         '''
         if not ordered:
             self.forward = {}
@@ -77,7 +77,9 @@ class Relation(Indexed):
         return self.forward.__iter__()
 
     def __invert__(self):
-        # NOTE: uses references .. not copies
+        '''
+        NOTE: Relation inversion uses references instead of copies
+        '''
         new = Relation(cardinality=Relation.INVERTED_CARDINALITIES[
                        self.cardinality], ordered=self.ordered)
         new.inverse = self.forward
@@ -108,7 +110,10 @@ class Relation(Indexed):
 
     @unfrozen
     def __setitem__(self, domain, target):
-        # NOTE: Relation using unconventional setitem usage: ADD instead of OVERWRITE
+        '''
+        for 1:M and M:M cardinalities, *add* key-value pairs;
+        for 1:1 and M:1 cardinalities, *overwrite* key-value pairs when same key
+        '''
         if self.cardinality in ['1:1', 'M:1']:
             if domain in self.forward:
                 self._remove_domain(domain)
@@ -167,7 +172,7 @@ class Relation(Indexed):
 
     def compose(self, other):
         '''
-        Functional or relational composition
+        compose relation with another relation or a function
         '''
         if isinstance(other, Relation):
             new = Relation(cardinality=Relation.COMPOSITIONS[
@@ -208,9 +213,7 @@ class Relation(Indexed):
     # cross-product operations
 
     def cross(self, other, op=operator.__or__):
-        '''
-        Experimental cross-product code ...
-        '''
+        # Experimental cross-product code ...
         def setit(x, cardinality):
             if cardinality in ['1:1', 'M:1']:
                 return {x}
@@ -228,7 +231,7 @@ class Relation(Indexed):
 
     class Error(Indexed.Error):
         '''
-        Label Relation exceptions
+        label Relation exceptions
         '''
         pass
 

@@ -7,22 +7,17 @@ import unittest
 
 class Unindexed(MutableMapping):
     '''
-    An *Encyclopedia* extends a MutableMapping with the following features:
+    an *Unindexed Encyclopedia* extends a *MutableMapping* with the following features:
 
-    - *composition*: Encyclopedia contents may be altered by functions or Encyclopedias
-    - *set operation*: Encyclopedias may be combined using union, difference and intersection
+    - **composition**: Encyclopedia contents may be altered by functions or Encyclopedias
+    - **set operation**: Encyclopedias may be combined using union, difference and intersection
+    - **mutability**: ability to "freeze" and "melt" an object, that is, change its mutability
 
-    Additional features:
-
-    - ability to "freeze" and "melt" an object, that is, change its mutability
-
-    An *Unindexed* Encyclopedia is the basic Encyclopedia
-    All other Encyclopedias are derived from Unindexed Encyclopedias
     '''
 
     def unfrozen(f):
         '''
-        A decorator to check if object is unfrozen
+        decorator to check if object is unfrozen
         '''
         @wraps(f)
         def new(self, *args, **kw):
@@ -35,7 +30,7 @@ class Unindexed(MutableMapping):
     @unfrozen
     def subtract(self, other):
         '''
-        Perform set difference.  Prototypical code:
+        perform set difference
         '''
         for key in other:
             del self[key]
@@ -44,16 +39,19 @@ class Unindexed(MutableMapping):
     @staticmethod
     def identity(thing):
         '''
-        Single input, single output identity function
+        a single input, single output identity function
         '''
         return thing
 
     def copy(self):
+        '''
+        perform a "deep" copy
+        '''
         return copy.deepcopy(self)
 
     def freeze(self):
         '''
-        Make encyclopedia immutable
+        make encyclopedia immutable
         '''
         new = copy.deepcopy(self)
         new.frozen = True
@@ -61,13 +59,16 @@ class Unindexed(MutableMapping):
 
     def melt(self):
         '''
-        Make encyclopedia mutable
+        make encyclopedia mutable
         '''
         new = copy.deepcopy(self)
         new.frozen = False
         return new
 
     def __add__(self, other):
+        '''
+        create union with this encyclopedia and another
+        '''
         new = copy.deepcopy(self)
         new.update(other)
         return new
@@ -86,18 +87,27 @@ class Unindexed(MutableMapping):
         return self
 
     def __sub__(self, other):
+        '''
+        perform set difference of this encyclopedia and other
+        '''
         return self.copy().subtract(other)
 
     def __mul__(self, other):
+        '''
+        compose encyclopedia with another object
+        '''
         return self.compose(other)
     __rmul__ = __mul__ # note that signature is purposefully *not* reversed
 
     def __and__(self, other):
+        '''
+        intersect using unsigned logic
+        '''
         return self - (self - other)
 
     def compose(self, other):
         '''
-        Perform functional or Encyclopedic composition. Prototypical code:
+        perform functional or Encyclopedic composition
         '''
         new = self.__class__()
         for key, value in self.items():
@@ -107,7 +117,7 @@ class Unindexed(MutableMapping):
 
     class Error(Exception):
         '''
-        Label Encylopedia exceptions
+        label Encylopedia exceptions
         '''
         pass
 
@@ -119,7 +129,7 @@ class Indexed(Unindexed):
     @abstractmethod
     def __invert__(self):
         '''
-        Invert the Encyclopedia
+        invert the Encyclopedia
         '''
         pass
 
@@ -158,18 +168,27 @@ class Unity(Indexed):
 
 class Signed(Indexed):
     '''
-    An **Signed** Encyclopedia may be inverted, that is, values map to their keys
+    An *Signed* Encyclopedia* may be inverted, that is, values map to their keys
     '''
 
     @abstractmethod
     def __abs__(self):
+        '''
+        de-negative this encyclopedia
+        '''
         pass
 
     @abstractmethod
     def __neg__(self):
+        '''
+        negate this encyclopedia
+        '''
         pass
 
     def __and__(self, other):
+        '''
+        intersect using signed logic
+        '''
         return self - abs(self - other)
 
 class Zero(Signed):

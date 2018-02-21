@@ -88,21 +88,19 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">encyclopedia package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-encyclopedia.arboretum">encyclopedia.arboretum module</a></li>
-<li><a class="reference internal" href="#module-encyclopedia.dictionary">encyclopedia.dictionary module</a></li>
-<li><a class="reference internal" href="#module-encyclopedia.forest">encyclopedia.forest module</a></li>
-<li><a class="reference internal" href="#module-encyclopedia.relate">encyclopedia.relate module</a></li>
-<li><a class="reference internal" href="#module-encyclopedia.templates">encyclopedia.templates module</a></li>
-<li><a class="reference internal" href="#module-encyclopedia.xmltree">encyclopedia.xmltree module</a></li>
-<li><a class="reference internal" href="#module-encyclopedia">Module contents</a></li>
+              <p class="caption"><span class="caption-text">A Brief Tour</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html#ok-but-what-is-good-for">Ok, But What is Good For?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html#encyclopedia-operations">Encyclopedia Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html#past-breadcrumbs-and-near-future-plans">Past Breadcrumbs and (Near) Future Plans</a></li>
 </ul>
-</li>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">Abstract Encyclopedias</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html#concrete-encyclopedias">Concrete Encyclopedias</a></li>
 </ul>
-</div>
+
             
           
         </div>
@@ -677,17 +675,12 @@ NOTE: not suggested usage as this can make the Relations inconsistent/corrupt</p
 <dt id="encyclopedia.templates.Unindexed">
 <em class="property">class </em><code class="descclassname">encyclopedia.templates.</code><code class="descname">Unindexed</code><a class="headerlink" href="#encyclopedia.templates.Unindexed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">collections.abc.MutableMapping</span></code></p>
-<p>An <em>Encyclopedia</em> extends a MutableMapping with the following features:</p>
+<p>An <em>Unindexed Encyclopedia</em> extends a MutableMapping with the following features:</p>
 <ul class="simple">
 <li><em>composition</em>: Encyclopedia contents may be altered by functions or Encyclopedias</li>
 <li><em>set operation</em>: Encyclopedias may be combined using union, difference and intersection</li>
-</ul>
-<p>Additional features:</p>
-<ul class="simple">
 <li>ability to “freeze” and “melt” an object, that is, change its mutability</li>
 </ul>
-<p>An <em>Unindexed</em> Encyclopedia is the basic Encyclopedia
-All other Encyclopedias are derived from Unindexed Encyclopedias</p>
 <dl class="exception">
 <dt id="encyclopedia.templates.Unindexed.Error">
 <em class="property">exception </em><code class="descname">Error</code><a class="headerlink" href="#encyclopedia.templates.Unindexed.Error" title="Permalink to this definition">¶</a></dt>
@@ -698,24 +691,25 @@ All other Encyclopedias are derived from Unindexed Encyclopedias</p>
 <dl class="method">
 <dt id="encyclopedia.templates.Unindexed.compose">
 <code class="descname">compose</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.templates.Unindexed.compose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform functional or Encyclopedic composition. Prototypical code:</p>
+<dd><p>Perform functional or Encyclopedic composition</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="encyclopedia.templates.Unindexed.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.templates.Unindexed.copy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>perform a “deep” copy</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="encyclopedia.templates.Unindexed.freeze">
 <code class="descname">freeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.templates.Unindexed.freeze" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make encyclopedia immutable</p>
+<dd><p>make encyclopedia immutable</p>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="encyclopedia.templates.Unindexed.identity">
 <em class="property">static </em><code class="descname">identity</code><span class="sig-paren">(</span><em>thing</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.templates.Unindexed.identity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Single input, single output identity function</p>
+<dd><p>a single input, single output identity function</p>
 </dd></dl>
 
 <dl class="method">
@@ -727,7 +721,7 @@ All other Encyclopedias are derived from Unindexed Encyclopedias</p>
 <dl class="method">
 <dt id="encyclopedia.templates.Unindexed.subtract">
 <code class="descname">subtract</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#encyclopedia.templates.Unindexed.subtract" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform set difference.  Prototypical code:</p>
+<dd><p>Perform set difference</p>
 </dd></dl>
 
 <dl class="method">

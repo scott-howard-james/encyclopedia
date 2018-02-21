@@ -11,9 +11,9 @@ from encyclopedia.relate import Function, Relation
 
 class XML():
     '''
-    Forest syntax on top of elementTree XML implementation.
-    To avoid confusion, inherits from neither elementTree nor Arboretum directly
-    Note that the tree(forest) is stored *in parallel* to elementTree structure
+    Forest syntax combined with an elementTree XML implementation.
+    To avoid confusion, inherits from neither elementTree nor Arboretum directly,
+    thus the tree(forest) is stored *in parallel* to the elementTree structure
     '''
     FOLD = '/' # use this delimeter to create unique identifiers
 
@@ -173,7 +173,7 @@ class XML():
 
     def write(self, filename=None, doctype=None):
         '''
-        Note that write will add tabs for pretty-printing
+        Note: will add tabs for pretty-printing
         '''
         root=self.elements[self.root]
         XML._indent(root)
