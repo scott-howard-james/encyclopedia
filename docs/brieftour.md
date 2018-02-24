@@ -68,7 +68,7 @@ Notation | Meaning
  ---  |  ---
 R[x] = y | either overwrite or append to *x* values depending on cardinality of the Relation (Note: M:1 and 1:1 overwrite, the other two append)
 del R[x] | remove *x* from domain of *E* and all associated values for *x*
-R1 + R2 | similar to `{**E1, **E2}` for python dictionaries, but with associated cardinality constraints
+R1 + R2 | similar to `{**R1, **R2}` for python dictionaries, but with associated cardinality constraints
 R1 - R2 | remove any *R2*.keys that lie within *R1*.keys and the associated values
 f * R  |  apply f to each element of R
 R1 * R2 | apply R1 to each element of R2
