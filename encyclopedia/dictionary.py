@@ -3,10 +3,10 @@ import unittest
 # external
 # internal
 from encyclopedia.templates import Unindexed
-'''
-A simple application to show adding Encyclopedic features to the humble dictionary
-'''
 class Dictionary(dict, Unindexed):
+    '''
+    A simple instantiation adding Encyclopedic features to the python dictionary
+    '''
 
     def __init__(self, mapping=None):
         dict.__init__(self)

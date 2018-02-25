@@ -33,7 +33,6 @@ Dictionary
 .. autoclass:: encyclopedia.Dictionary
     :members:
     :show-inheritance:
-    :special-members:
 
 Relation
 -----------
