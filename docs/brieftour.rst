@@ -7,11 +7,11 @@ What Is It?
 An Encyclopedia is an abstract container intended for smallish data sets
 which provides many of the benefits of a relational (and non-relational)
 database, but with lower syntactic friction. In particular, an
-Encyclopedia uses arithmetic expressions typical of first-class objects
-(e.g. lists, dictionaries) to perform common dataset operations such as
-merging and subsetting. Encyclopedia supports functional composition,
-enabling modifications to entire Encyclopedias in a single statement,
-similar to data frame vectorization.
+Encyclopedia uses arithmetic expressions typical of core storage
+mechanisms (e.g. lists, dictionaries) to perform common dataset
+operations such as merging and subsetting. Encyclopedia supports
+functional composition, enabling modifications to entire Encyclopedias
+in a single statement, similar to data frame vectorization.
 
 But What Is It Really …
 -----------------------
@@ -126,7 +126,7 @@ supported:
 | del R[x]                          | remove *x* from domain of *E* and |
 |                                   | all associated values for *x*     |
 +-----------------------------------+-----------------------------------+
-| R1 + R2                           | similar to ``{**E1, **E2}`` for   |
+| R1 + R2                           | similar to ``{**R1, **R2}`` for   |
 |                                   | python dictionaries, but with     |
 |                                   | associated cardinality            |
 |                                   | constraints                       |
