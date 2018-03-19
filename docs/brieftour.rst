@@ -149,7 +149,6 @@ expressed as:
 ::
 
         {R[f(x)]:f(R[x]) for x in R}
-        
 
 A relational composition as:
 
@@ -197,7 +196,7 @@ also producing a set of values:
 
 ::
 
-        {'2014-7-25','2014-7-24'} 
+        {'2014-7-25','2014-7-24'}
 
 See the `paper from SciPy
 2015 <https://github.com/scott-howard-james/relate/wiki/Rationale>`__
@@ -314,7 +313,6 @@ bracket assignment, namely:
 ::
 
         F[x, attribute] = value
-        
 
 This assigns the key-value pair *(attribute, value)* directly to *x* as
 well as implicitly to the nodes above *x*. Retrieving attributes is
@@ -332,7 +330,6 @@ a motivating example, suppose we had a hierarchical document:
 
         F['Document'] = 'Section 1'
         F['Section 1'] = 'Section 1.1'
-        
 
 Assigning the font
 
@@ -346,7 +343,6 @@ overall document. A new section created at the *Document* level
 ::
 
         F['Document'] = 'Section 2'
-        
 
 will be unaffected by the font assignment but further subsections below
 *Section 1.1*
@@ -456,14 +452,12 @@ is *not* necessarily commutative:
 ::
 
         E1*E2 ?= E2*E1
-        
 
 but it is distributive [4]_:
 
 ::
 
         E1*(E1+E3) == E1*(E2+E2)
-        
 
 as functions act element-wise on the keys.
 
@@ -476,7 +470,6 @@ signed Encyclopedia:
 ::
 
         -E
-        
 
 Note that we specifically refer to the
 `unary <https://docs.python.org/3/reference/expressions.html>`__
@@ -539,7 +532,6 @@ When a multiplicative inverse:
 ::
 
         ~E
-        
 
 is available, the Encyclopedia is a
 `field <https://en.wikipedia.org/wiki/Field_(mathematics)>`__ where:

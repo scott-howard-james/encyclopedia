@@ -7,9 +7,8 @@ from encyclopedia.forest import Forest
 
 class Arboretum(Forest):
     '''
-    A Forest with inhertiable attributes
-
-    Note: as attributes are assigned using setitem syntax, tuples cannot be used as node aliases
+    A Forest with inhertiable attributes.  Note: as attributes are assigned using setitem syntax,
+    tuples cannot be used as node aliases
     '''
 
     def __init__(self,

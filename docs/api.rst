@@ -34,6 +34,13 @@ Dictionary
     :members:
     :show-inheritance:
 
+Record
+-----------
+
+.. autoclass:: encyclopedia.Record
+    :members:
+    :show-inheritance:
+
 Relation
 -----------
 

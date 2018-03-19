@@ -7,7 +7,7 @@ import unittest
 
 class Unindexed(MutableMapping):
     '''
-    an *Unindexed Encyclopedia* extends a *MutableMapping* with the following features:
+    An *Unindexed Encyclopedia* extends a *MutableMapping* with the following features:
 
     - **composition**: Encyclopedia contents may be altered by functions or Encyclopedias
     - **set operation**: Encyclopedias may be combined using union, difference and intersection
@@ -168,13 +168,14 @@ class Unity(Indexed):
 
 class Signed(Indexed):
     '''
-    An *Signed* Encyclopedia* may be inverted, that is, values map to their keys
+    A *Signed Encyclopedia* may contain negative elements, that is, elements which
+    cancel similarly keyed elements
     '''
 
     @abstractmethod
     def __abs__(self):
         '''
-        de-negative this encyclopedia
+        remove negative elements for this encyclopedia
         '''
         pass
 

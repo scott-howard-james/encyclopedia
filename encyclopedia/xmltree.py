@@ -173,7 +173,7 @@ class XML():
 
     def write(self, filename=None, doctype=None):
         '''
-        Note: will add tabs for pretty-printing
+        write the XML, adding tabs for pretty-printing
         '''
         root=self.elements[self.root]
         XML._indent(root)

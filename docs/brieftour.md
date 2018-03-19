@@ -40,7 +40,7 @@ Data analysts have an [embarrassment of riches ](https://en.wikipedia.org/wiki/E
 
 On the more modest end of the data deluge resides the localized data: the tabular CSV reports, the hierarchical XML data elements and the binary, human-friendly tag clouds.   The Encyclopedia syntax is intended to be used in this realm, providing a common syntax for the "smaller" data elements, providing a bridge between the scripting container elements (e.g. lists, dictionaries) and the larger data ocean.
 
-As an abstract class, Encyclopedia has limited value on its own.  Two *concrete* Encyclopedias however, are [Relations](https://simple.wikipedia.org/wiki/Relation_(mathematics)) and [Forests](https://en.wikipedia.org/wiki/Tree_(graph_theory)), which were the motivators for the creation of the Encyclopedia abstraction.  
+As an abstract class, Encyclopedia has limited value on its own.  Two *concrete* Encyclopedias however, are [Relations](https://simple.wikipedia.org/wiki/Relation_(mathematics)) and [Forests](https://en.wikipedia.org/wiki/Tree_(graph_theory)), which were the motivators for the creation of the Encyclopedia abstraction.
 
 ## Relation
 
@@ -77,7 +77,7 @@ R1 * R2 | apply R1 to each element of R2
 Using notation similar to a python dictionary comprehension (but to be clear not *actually* valid python), a functional composition might be expressed as:
 
 		{R[f(x)]:f(R[x]) for x in R}
-		
+
 A relational composition as:
 
 		{R1[x]:R1[R2[x]) for x in R2}
@@ -108,29 +108,29 @@ Relation also provides an inverse:
 
 also producing a set of values:
 
-		{'2014-7-25','2014-7-24'} 
+		{'2014-7-25','2014-7-24'}
 
 See the [paper from SciPy 2015](https://github.com/scott-howard-james/relate/wiki/Rationale) for further exposition on Relation.
 
 ## Forest
 
-[Forests](https://en.wikipedia.org/wiki/Tree_(graph_theory)) are Unindexed Encyclopedias formed from collections of [ trees](https://en.wikipedia.org/wiki/Tree_(graph_theory)). 
+[Forests](https://en.wikipedia.org/wiki/Tree_(graph_theory)) are Unindexed Encyclopedias formed from collections of [ trees](https://en.wikipedia.org/wiki/Tree_(graph_theory)).
 
 ![Forest](https://qph.ec.quoracdn.net/main-qimg-708af2ed024c2fb8aa37cbac013573d7)
 
- Syntactically a tree, in our parlance, will grow "upwards"; thus the greater heights of a tree will be closer to the "leaves".  Each *node* in a tree connects upwards to a collection of distinct nodes; conversely each node has at most a single, directly-connecting lower node.  Forests may be combined with other Forests using set operations (*horizontal combination*), and be grown on top of other Forests using composition (*vertical combination*). 
+ Syntactically a tree, in our parlance, will grow "upwards"; thus the greater heights of a tree will be closer to the "leaves".  Each *node* in a tree connects upwards to a collection of distinct nodes; conversely each node has at most a single, directly-connecting lower node.  Forests may be combined with other Forests using set operations (*horizontal combination*), and be grown on top of other Forests using composition (*vertical combination*).
 
 Sub-branches of Forests are obtained through the bracket "get" notation:
 
 	    F[x]
 
-Note that the *keys* used in this bracket notation are different than *nodes*.   In particular, *nodes* within a  Forest are unique; however, *keys* may reference multiple nodes.  Therefore, there is a many-to-one relationship between keys and nodes; thus, the "get" returns *all* sub-branches in F with a root node *keyed* by *x*. 
- 
+Note that the *keys* used in this bracket notation are different than *nodes*.   In particular, *nodes* within a  Forest are unique; however, *keys* may reference multiple nodes.  Therefore, there is a many-to-one relationship between keys and nodes; thus, the "get" returns *all* sub-branches in F with a root node *keyed* by *x*.
+
 To construct new branches, Forests use the "set" bracket notation.  The bracket notation of Forests allows for several nodes to be *referenced* by a single key, specifically:
 
     	F[x] = y
 
-means: create a new node, keyed by *y*, *for every* node that is keyed by *x*.  
+means: create a new node, keyed by *y*, *for every* node that is keyed by *x*.
 
 Forests form the topological foundation of many common hierarchical document formats e.g. XML, JSON, YAML etc...  Non-unique keys enable us to include repeated substructures.  For instance, the get notation in another context, namely when *y* is another forest:
 
@@ -160,7 +160,7 @@ f * F  | apply f to each node of F
 An extension of a Forest is an Arboretum:  a Forest with inheritable node attributes.  Attributes are assigned using the second position in the bracket assignment, namely:
 
 		F[x, attribute] = value
-		
+
 This assigns the key-value pair *(attribute, value)* directly to *x* as well as implicitly to the nodes above *x*.  Retrieving attributes is dynamic:
 
 		F[x, attribute]
@@ -169,20 +169,20 @@ meaning, the tree is searched for an attribute starting at the node and descendi
 
 		F['Document'] = 'Section 1'
 		F['Section 1'] = 'Section 1.1'
-		
-Assigning the font 
+
+Assigning the font
 
 		F['Section 1', 'font'] = 'Helvetica'
 
 will affect *Section 1* and *Section 1.1*  but will not affect the overall document.  A new section created at the *Document* level
 
 		F['Document'] = 'Section 2'
-		
-will be unaffected by the font assignment but further subsections below *Section 1.1* 
+
+will be unaffected by the font assignment but further subsections below *Section 1.1*
 
 		F['Section 1.1'] = 'Section 1.1.1'
 
-will have their default font set. 
+will have their default font set.
 
 ## Dictionary
 
@@ -191,7 +191,7 @@ Another example of an Encyclopedia is simply a python dictionary which has been 
         fruit = Dictionary({'apple':'red', 'blueberry':'blue'})
         colors = Dictionary({'red':'FF0000', 'blue':'0000FF', 'green':'00FF00'})
 
-then 
+then
 
 		fruit * colors == Dictionary({'apple': 'FF0000', 'blueberry': '0000FF'})
 
@@ -204,7 +204,7 @@ Operation | Description
 E[x] = y | tag *x* with *y*
 del E[x] | remove *x* from domain of *E*  ... also known as [burglary](https://www.youtube.com/watch?v=R9n11xtjZ3Y).  Yep,  that was your obligatory Monty Python reference (*additive inverse*)
 E1 + E2 | an encyclopedia created by combining elements of *E2* and *E1* (*union*)
-E1 += E2 | add copy of *E2* to *E1* 
+E1 += E2 | add copy of *E2* to *E1*
 E1 - E2 | an encyclopedia created by removing keys of *E2* from *E1* (*difference*)
 E1 & E2 | an encyclopedia with keys common to both *E1* and *E2* (intersection)
 f * E  | apply *f*[^scaled] to all elements of *E* returning another encyclopedia.  (*functional composition*)
@@ -218,7 +218,7 @@ may not *overwrite* the key's value, but instead *append* to the key value or *t
 
     	E[x]
 
-may produce a set (or list) of values corresponding to the key.  
+may produce a set (or list) of values corresponding to the key.
 
 For the math-letes, note that encyclopedia addition is inherently commutative:
 
@@ -228,14 +228,14 @@ and associative:
 
 		E1+(E2+E3) == (E1+E2)+E3
 
-due to the nature of element-wise set operations.  Composition, however, is *not* necessarily commutative: 
+due to the nature of element-wise set operations.  Composition, however, is *not* necessarily commutative:
 
 		E1*E2 ?= E2*E1
-		
+
 but it is distributive[^composition]:
 
 		E1*(E1+E3) == E1*(E2+E2)
-		
+
 as functions act element-wise on the keys.
 
 ## Signed Encyclopedia
@@ -243,7 +243,7 @@ as functions act element-wise on the keys.
 An Encyclopedia is not a proper ring without the existence of a negative signed Encyclopedia:
 
 		-E
-		
+
 Note that we specifically refer to the [unary](https://docs.python.org/3/reference/expressions.html)  operation and not the binary set difference.  Note too that this is a little conceptually unusual, as a negative encyclopedia behaves a bit like [antimatter](https://en.wikipedia.org/wiki/Antimatter), able to negate a collection of key-values, but not necessarily  to serve as a meaningful mapping in our eminently practical universe.  If the unary negative sign is supported by a derived Encyclopedia, the class will be known as a **Signed Encyclopedia**,  and the following features will also be supported:
 
 Identity | Field
@@ -259,7 +259,7 @@ One important distinction between a Signed Encyclopedia and an Unsigned Encyclop
 
 		E1&E2 == E1-(E1-E2)
 
-For a Signed Encyclopedia however, this won't work as `-E1` is another Encyclopedia: 
+For a Signed Encyclopedia however, this won't work as `-E1` is another Encyclopedia:
 
 		E1-(E1-E2) == E1-E1+E2 == E2
 
@@ -272,7 +272,7 @@ Instead we must use the Signed Encyclopedia's *abs* operator to remove the negat
 When a multiplicative inverse:
 
 		~E
-		
+
  is available, the Encyclopedia is a [field](https://en.wikipedia.org/wiki/Field_(mathematics)) where:
 
 	    ~E*E == ~E*E == Identity
@@ -301,13 +301,13 @@ As with many abstract types, the concept of Encyclopedia did not emerge from the
 
 Syntax may not be everything, but it helps.  A lot.  As many data analysts have found, being able to express  something conveniently may determine whether  the analysis gets done *at all*.   Indeed, much of the power of scripting languages, including python, is the ability to express more complex structures, since the foundational structures (e.g. lists, sets, dictionaries) are so easy to describe.
 
-Addressing Forests specifically, there are a number of different hierarchical structures (e.g. YAML, XML, JSON) which are each essentially trees, topologically, but are supported by different packages and syntaxes.  Moreover, with regard to content generation, they sometimes lack the syntax for easily building more complex trees from simpler ones,  such as, mentioned above, combining two trees either as a simple union or recursively, with one tree nested inside the other.  
+Addressing Forests specifically, there are a number of different hierarchical structures (e.g. YAML, XML, JSON) which are each essentially trees, topologically, but are supported by different packages and syntaxes.  Moreover, with regard to content generation, they sometimes lack the syntax for easily building more complex trees from simpler ones,  such as, mentioned above, combining two trees either as a simple union or recursively, with one tree nested inside the other.
 
 ## Present
 
 The Encyclopedia specification, and implementations for:
 
-- Relation 
+- Relation
 - Forest
 - Arboretum
 - Dictionary (with a capital "D")
@@ -316,7 +316,7 @@ as well as  an:
 
 - Encyclopedic wrapper for XML
 
-Can be obtained at 
+Can be obtained at
 
 -  Github:  [https://github.com/scott-howard-james/encyclopedia](https://github.com/scott-howard-james/encyclopedia)
 -  PyPi: [https://pypi.python.org/pypi/encyclopedia/0.25](https://pypi.python.org/pypi/encyclopedia/0.25) (or alternatively  just `pip encyclopedia`)

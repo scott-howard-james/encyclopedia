@@ -8,12 +8,11 @@ from encyclopedia.relate import Relation
 
 class Forest(Unindexed):
     '''
-    An Encyclopedia of  trees <https://en.wikipedia.org/wiki/Tree_(graph_theory)>
-
-    Note that there is no specific "Tree" class; instead, a Tree is Forest with a single
+    An Encyclopedia of  trees <https://en.wikipedia.org/wiki/Tree_(graph_theory)>.
+    There is no specific "Tree" class; instead, a Tree is Forest with a single
     connected (tree) graph.  This is purposeful as adding two Trees creates a Forest, not another Tree.
 
-    Terminology for this class:
+    Terminology for a Forest:
 
     - *Tree*: single, connected (tree) graph
     - *Forest*: a (possibly empty) collection of Trees, supporting Unindexed Encyclopedia operations
@@ -26,7 +25,7 @@ class Forest(Unindexed):
         offset:int = 0, # starting node counter
         parent = None):# for future use ...
         '''
-        Create the forest
+        create the forest
         '''
         self.trees = set() # *disconnected* set of tree graphs
         self.aliases = Relation(cardinality='1:M') # alias -> node(s)
@@ -61,6 +60,7 @@ class Forest(Unindexed):
 
     def __len__(self):
         '''
+        number of aliases
         Note: number of keys (i.e. aliases) may be *less than* number of values (i.e. nodes)
         '''
         return len(self.aliases.values())
@@ -70,7 +70,7 @@ class Forest(Unindexed):
 
     def height(self):
         '''
-        Maximum height (of all nodes in Forest)
+        the maximum height of all nodes in Forest (in all trees)
         '''
         return max(self.levels.values())
 
@@ -169,7 +169,7 @@ class Forest(Unindexed):
 
     def root(self, alias=None):
         '''
-        return tree root of aliased node(s)
+        tree root of aliased node(s)
         '''
         for node in self.aliased(alias):
             if node in self.trees:
@@ -180,7 +180,7 @@ class Forest(Unindexed):
 
     def leaves(self, alias=None):
         '''
-        return leaves reachable from alias
+        leaves reachable from alias
         '''
         for node in self.aliased(alias):
             if node not in self.nodes:
@@ -223,7 +223,7 @@ class Forest(Unindexed):
         '''
         def idd(node):
             '''
-            Just a shortcut, meaning: "Id'd"
+            just a shortcut, meaning: "Id'd"
             '''
             return node.identified(identified, offset)
 
@@ -258,7 +258,7 @@ class Forest(Unindexed):
             aliased: bool = False, # return just alias
         ):
         '''
-        return topologically sorted node *list* (not iterator)
+        topologically sorted node *list* (not iterator)
         '''
         nodes = list(
             self.climb(alias,
@@ -305,7 +305,7 @@ class Forest(Unindexed):
             morph: types.FunctionType = Unindexed.identity, # modify keys/values upon entry
         ):
         '''
-        return subforest rooted at alias
+        subforest rooted at alias
         '''
         def morphed(node):
             if isinstance(node, Forest.Node):
@@ -335,7 +335,7 @@ class Forest(Unindexed):
             offset: int = 0
         ):
         '''
-        return the tree (single line of nodes) below aliased node(s)
+        the tree (single line of nodes) below aliased node(s)
         '''
         def gravity(node):
             yield node
@@ -410,8 +410,7 @@ class Forest(Unindexed):
 
     def subtract(self, other):
         '''
-        Perform set difference when "other" is a Forest;
-        otherwise, delete element
+        perform set difference when "other" is a Forest; otherwise, delete element
 
         Note: Encyclopedia mixin
         '''
@@ -473,7 +472,6 @@ class Forest(Unindexed):
             return aliases.pop()
         else:
             return aliases
-
 
 class Test_Forest(unittest.TestCase):
 
@@ -619,7 +617,7 @@ class Test_Forest(unittest.TestCase):
 
     def test_limb(self):
         f1 = self.f.limb('G41')
-        assert list(f1) == ['G01','G11','G21','G32','G41']
+        assert f1.sorted(aliased=True) == ['G01','G11','G21','G32','G41']
 
 if __name__ == '__main__':
     unittest.main()

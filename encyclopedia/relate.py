@@ -68,9 +68,15 @@ class Relation(Indexed):
         return isinstance(self.forward, OrderedDict)
 
     def __len__(self):
+        '''
+        number of keys (domain)
+        '''
         return len(self.forward)
 
     def values(self):
+        '''
+        the range of the mapping
+        '''
         return self.inverse.keys()
 
     def __iter__(self):
@@ -78,7 +84,9 @@ class Relation(Indexed):
 
     def __invert__(self):
         '''
-        NOTE: Relation inversion uses references instead of copies
+        reverse the domain and range
+
+        Note: Relation inversion uses references instead of copies
         '''
         new = Relation(cardinality=Relation.INVERTED_CARDINALITIES[
                        self.cardinality], ordered=self.ordered)
@@ -111,8 +119,8 @@ class Relation(Indexed):
     @unfrozen
     def __setitem__(self, domain, target):
         '''
-        for 1:M and M:M cardinalities, *add* key-value pairs;
-        for 1:1 and M:1 cardinalities, *overwrite* key-value pairs when same key
+        - add key-value pairs for 1:M and M:M cardinalities
+        - overwrite key values for 1:1 and M:1 cardinalities
         '''
         if self.cardinality in ['1:1', 'M:1']:
             if domain in self.forward:
@@ -146,6 +154,9 @@ class Relation(Indexed):
 
     @unfrozen
     def update(self, other):
+        '''
+        update a Relation with another Relation
+        '''
         cardinality = Relation._get_cardinality(other)
         if cardinality is None:
             raise RelationError('Cannot update:' + str(other))
@@ -201,6 +212,9 @@ class Relation(Indexed):
         return new
 
     def __str__(self):
+        '''
+        display the forward and inverted mappings
+        '''
         s = []
         s.append('->')
         for d in self.forward:
@@ -428,13 +442,13 @@ class Test_Relation(unittest.TestCase):
         added = fruit + colors
         assert len(added) == len(fruit) + len(colors)
         assert isinstance(added, Relation)
-        unpacked = {**fruit, **colors}
+        unpacked = fruit.copy()
+        unpacked.update(colors)
         assert len(unpacked) == len(fruit) + len(colors)
-        assert isinstance(unpacked, dict)
         updated = fruit.copy().update(colors)
         assert len(updated) == len(fruit) + len(colors)
         assert updated == added
-        assert updated != unpacked
+        assert updated == unpacked
 
     def test_pipe(self):
         fruit = self.fruit
