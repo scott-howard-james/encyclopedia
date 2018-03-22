@@ -15,9 +15,18 @@ class Unindexed(MutableMapping):
 
     '''
 
+    def __init__(self, mapping=None, frozen=False):
+        '''
+        - mapping: initialize the Encyclopedia with another mapping
+        - frozen: when True, do not allow in-place modification
+        '''
+        self.frozen = frozen
+        if mapping is not None:
+            self.update(mapping)
+
     def unfrozen(f):
         '''
-        decorator to check if object is unfrozen
+        function decorator to check if object is unfrozen
         '''
         @wraps(f)
         def new(self, *args, **kw):

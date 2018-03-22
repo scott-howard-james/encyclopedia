@@ -7,12 +7,9 @@ class Dictionary(dict, Unindexed):
     '''
     A simple instantiation adding Encyclopedic features to the python dictionary
     '''
-
-    def __init__(self, mapping=None):
+    def __init__(self, mapping=None, frozen=False):
         dict.__init__(self)
-        self.frozen = False
-        if mapping is not None:
-            self.update(mapping)
+        Unindexed.__init__(self, frozen=frozen, mapping=mapping)
 
 class Test_Dictionary(unittest.TestCase):
 

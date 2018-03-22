@@ -3,7 +3,7 @@ Encyclopedia
 ========================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: A Brief Tour
 
    brieftour.rst

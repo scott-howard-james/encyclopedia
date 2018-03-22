@@ -17,8 +17,7 @@ class Record(dict, Unindexed):
     '''
 
     def __init__(self, mapping=None, autopopulate=False):
-        if mapping is not None:
-            self.update(mapping)
+        Unindexed.__init__(self, frozen=False, mapping=mapping)
         self.autopopulate = autopopulate
 
     def __setitem__(self, key, value):
@@ -38,9 +37,7 @@ class Record(dict, Unindexed):
         class Internal(Dictionary):
 
             def __init__(dictionary, mapping=None):
-                dictionary.frozen=False
-                if mapping is not None:
-                    dictionary.update(mapping)
+                Dictionary.__init__(dictionary, mapping=mapping)
                 if self.autopopulate:
                     for key in self:
                         dictionary[key] = self[key]()

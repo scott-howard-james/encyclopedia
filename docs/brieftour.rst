@@ -372,6 +372,60 @@ then
 
         fruit * colors == Dictionary({'apple': 'FF0000', 'blueberry': '0000FF'})
 
+Record
+------
+
+Building on the Dictionary, a Record is factory for Dictionaries
+providing other features including:
+
+-  restricted keys
+-  automatic type conversions
+-  optional defaults
+
+As an example, we can define a factory for recording personal
+characteristics:
+
+::
+
+        from encyclopedia import Record
+        characteristics = Record({
+            'name':str,
+            'age':int})
+
+To create the individual Dictionaries we use the ``Record.instance``
+function:
+
+::
+
+        Dog = characteristics.instance # make it more class-like    
+        fido = Dog()
+        fido['age']='2'
+        assert fido['age']==2
+
+Note that the ``age`` was converted to an integer by the *function*
+``int``. We can put in any functions we like into the Record defintion
+and even auto-populate:
+
+::
+
+        def no_name(x=None): 
+            return 'UNKNOWN' if x is None else str(x)
+
+        Named = Record({
+            'name':no_name,
+            'age':int},
+            autopopulate=True).instance
+
+        someone = Named()
+        assert someone['name']=='UNKNOWN'
+
+Note also that Record will complain (with a friendly Exception) is one
+were to attempt to set keys other than provided in the factory:
+
+::
+
+        someone['address'] # not valid
+
 Encyclopedia Operations
 =======================
 
@@ -389,8 +443,7 @@ Encyclopedia:
 |                                   | `burglary <https://www.youtube.co |
 |                                   | m/watch?v=R9n11xtjZ3Y>`__.        |
 |                                   | Yep, that was your obligatory     |
-|                                   | Monty Python reference (*additive |
-|                                   | inverse*)                         |
+|                                   | Monty Python reference            |
 +-----------------------------------+-----------------------------------+
 | E1 + E2                           | an encyclopedia created by        |
 |                                   | combining elements of *E2* and    |
@@ -608,7 +661,8 @@ The Encyclopedia specification, and implementations for:
 -  Relation
 -  Forest
 -  Arboretum
--  Dictionary (with a capital “D”)
+-  Dictionary
+-  Record
 
 as well as an:
 
@@ -617,8 +671,8 @@ as well as an:
 Can be obtained at
 
 -  Github: https://github.com/scott-howard-james/encyclopedia
--  PyPi: https://pypi.python.org/pypi/encyclopedia/0.25 (or
-   alternatively just ``pip encyclopedia``)
+-  PyPi: https://pypi.python.org/pypi/encyclopedia/ (alternatively, just
+   ``pip encyclopedia``)
 
 Note that Encyclopedia has no dependencies outside of the standard
 python distribution.

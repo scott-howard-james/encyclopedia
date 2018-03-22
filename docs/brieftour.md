@@ -195,6 +195,45 @@ then
 
 		fruit * colors == Dictionary({'apple': 'FF0000', 'blueberry': '0000FF'})
 
+## Record
+
+Building on the Dictionary, a Record is factory for Dictionaries providing other features including:
+
+- restricted keys
+- automatic type conversions
+- optional defaults
+
+As an example, we can define a factory for recording personal characteristics:
+
+		from encyclopedia import Record
+		characteristics = Record({
+	    	'name':str,
+	    	'age':int})
+
+To create the individual Dictionaries we use the `Record.instance` function:
+
+		Dog = characteristics.instance # make it more class-like	
+		fido = Dog()
+		fido['age']='2'
+		assert fido['age']==2
+
+Note that the `age` was converted to an integer by the *function* `int`.  We can put in any functions we like into the Record defintion and even auto-populate:
+
+		def no_name(x=None): 
+			return 'UNKNOWN' if x is None else str(x)
+
+		Named = Record({
+    		'name':no_name,
+	    	'age':int},
+    		autopopulate=True).instance
+
+		someone = Named()
+		assert someone['name']=='UNKNOWN'
+
+Note also that Record will complain (with a friendly Exception) is one were to attempt to set keys other than provided in the factory:
+
+		someone['address'] # not valid
+
 # Encyclopedia Operations
 
 It may be illustrative (at least for those of us who *like* looking at summary tables) to now show an overview of operations for an Encyclopedia:
@@ -202,7 +241,7 @@ It may be illustrative (at least for those of us who *like* looking at summary t
 Operation | Description
  ---  |  ---
 E[x] = y | tag *x* with *y*
-del E[x] | remove *x* from domain of *E*  ... also known as [burglary](https://www.youtube.com/watch?v=R9n11xtjZ3Y).  Yep,  that was your obligatory Monty Python reference (*additive inverse*)
+del E[x] | remove *x* from domain of *E*  ... also known as [burglary](https://www.youtube.com/watch?v=R9n11xtjZ3Y).  Yep,  that was your obligatory Monty Python reference
 E1 + E2 | an encyclopedia created by combining elements of *E2* and *E1* (*union*)
 E1 += E2 | add copy of *E2* to *E1*
 E1 - E2 | an encyclopedia created by removing keys of *E2* from *E1* (*difference*)
@@ -310,7 +349,8 @@ The Encyclopedia specification, and implementations for:
 - Relation
 - Forest
 - Arboretum
-- Dictionary (with a capital "D")
+- Dictionary
+- Record
 
 as well as  an:
 
@@ -319,7 +359,7 @@ as well as  an:
 Can be obtained at
 
 -  Github:  [https://github.com/scott-howard-james/encyclopedia](https://github.com/scott-howard-james/encyclopedia)
--  PyPi: [https://pypi.python.org/pypi/encyclopedia/0.25](https://pypi.python.org/pypi/encyclopedia/0.25) (or alternatively  just `pip encyclopedia`)
+-  PyPi: [https://pypi.python.org/pypi/encyclopedia/](https://pypi.python.org/pypi/encyclopedia/) (alternatively,  just `pip encyclopedia`)
 
 Note that Encyclopedia has no dependencies outside of the standard python distribution.
 

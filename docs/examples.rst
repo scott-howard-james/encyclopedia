@@ -1,8 +1,0 @@
-Examples
-========
-
-Dictionary
-----------
-
-Record
-------

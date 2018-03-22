@@ -39,6 +39,8 @@ class Relation(Indexed):
         '''
         create a new Relation using a variety of different inputs
         '''
+        Indexed.__init__(self, frozen=frozen)
+
         if not ordered:
             self.forward = {}
             self.inverse = {}
@@ -46,7 +48,6 @@ class Relation(Indexed):
             self.forward = OrderedDict()
             self.inverse = OrderedDict()
         self.ordered = ordered
-        self.frozen = frozen
 
         if cardinality not in Relation.CARDINALITIES:
             raise Relation.Error('Invalid restriction:' + str(cardinality))

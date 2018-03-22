@@ -8,14 +8,14 @@ from encyclopedia.relate import Relation
 
 class Forest(Unindexed):
     '''
-    An Encyclopedia of  trees <https://en.wikipedia.org/wiki/Tree_(graph_theory)>.
+    An Encyclopedia of trees <https://en.wikipedia.org/wiki/Tree_(graph_theory)>.
     There is no specific "Tree" class; instead, a Tree is Forest with a single
     connected (tree) graph.  This is purposeful as adding two Trees creates a Forest, not another Tree.
 
-    Terminology for a Forest:
+    Terminology for Forest class:
 
     - *Tree*: single, connected (tree) graph
-    - *Forest*: a (possibly empty) collection of Trees, supporting Unindexed Encyclopedia operations
+    - *Forest*: a (possibly empty) collection of Trees, supporting Encyclopedia operations
     - *Node*: a single node in a graph
     - *Twig*: a connected pair of nodes
     - *Sprout*: a new, connected node
@@ -27,13 +27,13 @@ class Forest(Unindexed):
         '''
         create the forest
         '''
+        Unindexed.__init__(self, frozen=False) # start off mutable
         self.trees = set() # *disconnected* set of tree graphs
         self.aliases = Relation(cardinality='1:M') # alias -> node(s)
         self.nodes = Relation(cardinality='1:M') # node -> upper node(s)
         self.levels = Relation(cardinality='M:1') # node(s) -> level
         self.counter = offset # counter used for creating unique Node IDs
         self.parent = parent # future use for referencing originating forest (where applicable)
-        self.frozen = False # start off mutable
 
     unfrozen = Unindexed.unfrozen
 

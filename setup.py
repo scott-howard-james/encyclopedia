@@ -12,6 +12,7 @@ from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
+from encyclopedia import __version__
 
 # Get the long description from the README file
 #with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
@@ -40,7 +41,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.26',  # Required
+    version=__version__,
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
