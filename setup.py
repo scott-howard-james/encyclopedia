@@ -125,7 +125,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     #install_requires=['peppercorn'],  # Optional
 
-    python_requires='>=3.6',
+    python_requires='>=3.4',
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
