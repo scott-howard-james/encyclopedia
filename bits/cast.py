@@ -7,8 +7,7 @@ class Cast:
     '''
     Factory for creating "casts", that is, functions which:
 
-    1. change a value into another with the same semantic content but (perhaps) a different type
-        (https://en.wikipedia.org/wiki/Type_conversion)
+    1. change a value into another with the same semantic content but (perhaps) a different type (https://en.wikipedia.org/wiki/Type_conversion)
     2. return a default value in the case of no parameters
 
     Notes:

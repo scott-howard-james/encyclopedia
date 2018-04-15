@@ -13,3 +13,7 @@ Encyclopedia
    :caption: API Reference
 
    api.rst
+
+Index
+==================
+* :ref:`genindex`

@@ -76,7 +76,7 @@ Casting
 --------
 
 .. autoclass:: bits.cast.Cast
-    :members:
+    :members: __init__, cast
 
 File Handling
 ---------------
