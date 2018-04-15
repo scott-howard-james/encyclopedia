@@ -72,6 +72,15 @@ XML
 Utility Classes
 =======================
 
+Casting
+--------
+
+.. autoclass:: bits.cast.Cast
+    :members:
+
+File Handling
+---------------
+
 .. autoclass:: bits.file.File
     :members:
 
@@ -80,3 +89,4 @@ Utility Classes
 
 .. autoclass:: bits.file.CSV
     :members:
+
