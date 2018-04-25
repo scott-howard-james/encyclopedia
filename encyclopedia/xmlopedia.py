@@ -7,7 +7,6 @@ import unittest
 import xml.etree.ElementTree as et
 # internal
 from encyclopedia.arboretum import Arboretum
-from encyclopedia.relate import Function, Relation
 
 class XML():
     '''
@@ -18,15 +17,17 @@ class XML():
     FOLD = '/' # use this delimeter to create unique identifiers
 
     def __init__(self):
-        self.counter=0
+        self.counter = 0
         self.root = None
+        self.forest = None
+        self.elements = None
 
     def _create(self, root):
         assert root is not None
         self.forest = Arboretum()
         self.forest += root
-        self.elements={root:et.Element(root)}
-        self.root=root
+        self.elements = {root:et.Element(root)}
+        self.root = root
 
     def __iadd__(self, root):
         assert self.root is None
@@ -39,13 +40,13 @@ class XML():
 # reading functions
 
     @staticmethod
-    def _iterate (element, recursive=True, tag=None):
+    def _iterate(element, recursive=True, tag=None):
         '''
         recursive: recursive into subelements
         tag: limit to these tags during recursive iteration
         '''
-        if isinstance(element,XML):
-            element=element[element.root]
+        if isinstance(element, XML):
+            element = element[element.root]
         if recursive:
             it = element.iter(tag)
         else:
@@ -69,16 +70,16 @@ class XML():
                 return s
 
         if level == 0:
-            name=clean(element.tag)
+            name = clean(element.tag)
             self._create(name)
-        for key,value in element.items():
-            self[name].set(key,value)
+        for key, value in element.items():
+            self[name].set(key, value)
         for other in list(element):
-            tag=clean(other.tag)
-            if len(list(other))==0:
-                self[name,tag]=other.text
+            tag = clean(other.tag)
+            if len(list(other)) == 0:
+                self[name, tag] = other.text
             else:
-                self[name]=oname=self.unique(tag)
+                self[name] = oname = self.unique(tag)
                 self._read(other, oname, level+1)
 
     def copy(self):
@@ -94,12 +95,12 @@ class XML():
         else:
             file = open(filename, 'rt')
         # process file
-        xml=XML()
-        xml._read(et.parse(file).getroot(),None,0)
+        xml = XML()
+        xml._read(et.parse(file).getroot(), None, 0)
         file.close()
         return xml
 
-    def iterate (self, recursive=True, tag=None):
+    def iterate(self, recursive=True, tag=None):
         yield from XML._iterate(self, recursive, tag)
 
     def __iter__(self):
@@ -133,20 +134,20 @@ class XML():
         del self.elements[key]
 
     def __getitem__(self, key):
-        if not isinstance(key,tuple):
+        if not isinstance(key, tuple):
             return self.elements[key]
         else:
             return self.forest[key]
 
     def __setitem__(self, key, value):
-        if not isinstance(key,tuple):
+        if not isinstance(key, tuple):
             assert value not in self.elements
-            self.elements[value]=et.SubElement(self.elements[key],value.split(XML.FOLD)[-1])
+            self.elements[value] = et.SubElement(self.elements[key], value.split(XML.FOLD)[-1])
         else:
-            node,attr=key
+            node, attr = key
             thing = et.SubElement(self.elements[node], attr)
             thing.text = str(value)
-        self.forest[key]=value
+        self.forest[key] = value
 
     @staticmethod
     def _indent(elem, level=0):
@@ -168,14 +169,14 @@ class XML():
         if name not in self.elements:
             return name
         else:
-            self.counter+=1
-            return XML.FOLD.join([str(self.counter),name])
+            self.counter += 1
+            return XML.FOLD.join([str(self.counter), name])
 
     def write(self, filename=None, doctype=None):
         '''
         write the XML, adding tabs for pretty-printing
         '''
-        root=self.elements[self.root]
+        root = self.elements[self.root]
         XML._indent(root)
         etree = et.ElementTree(root)
 
@@ -197,35 +198,35 @@ class Test_XML(unittest.TestCase):
         self.xt = xt = XML()
         xt += 'trunk'
         xt['trunk'] = 'Document'
-        for node in ['G1','G2']:
+        for node in ['G1', 'G2']:
             xt['Document'] = folder = xt.unique('Folder')
-            xt[folder,'name'] = node + ' folder'
-            xt[folder].set('id',node)
-            for place in ['P1','P2']:
+            xt[folder, 'name'] = node + ' folder'
+            xt[folder].set('id', node)
+            for place in ['P1', 'P2']:
                 xt[folder] = placemark = xt.unique('Placemark')
-                xt[placemark,'name'] = place + ' placemark'
+                xt[placemark, 'name'] = place + ' placemark'
 
     def test_io(self):
-        xt=self.xt
+        xt = self.xt
         with NamedTemporaryFile() as f:
-            xc=xt.copy()
+            xc = xt.copy()
             xc.write(f.name)
-            xs=XML.read(f.name)
-        assert str(xs) == str(xc)==str(xt)
+            xs = XML.read(f.name)
+        assert str(xs) == str(xc) == str(xt)
         assert et.tostring(xt.elements[xt.root]) == et.tostring(xs.elements[xs.root])
         assert et.tostring(xt.elements[xt.root]) != et.tostring(xc.elements[xc.root]) # because, tabs
 
     def test_del(self):
-        xt=self.xt
-        xc=xt.copy()
+        xt = self.xt
+        xc = xt.copy()
         del xc['4/Placemark']
-        assert xt.height()==xc.height()
-        assert len(xc)+1==len(xt)
+        assert xt.height() == xc.height()
+        assert len(xc)+1 == len(xt)
         del xc['Document']
         assert xc.height() == 0
 
     def test_iterate(self):
-        xt=self.xt
+        xt = self.xt
         l1 = list(xt.iterate(recursive=False))
         l2 = list(xt.iterate(recursive=True))
         l3 = [item for item in xt]

@@ -206,6 +206,7 @@ class Test_Cast(unittest.TestCase):
         assert To.none_string() is None
         assert To.none_string(' ') == ' '
         assert To.string() == ''
+        assert To.string(11) == '11'
         assert To.abs_integer('-1.03') == 1
         assert To.Integer.cast(11)() == 11
 

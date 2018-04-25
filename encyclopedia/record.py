@@ -2,10 +2,14 @@
 import unittest
 import types
 import sys
+from collections import Mapping
 # external
 # internal
 from encyclopedia.dictionary import Dictionary
 from encyclopedia.templates import Unindexed
+
+class Record_Exception(Exception):
+    pass
 
 class Record(dict, Unindexed):
     '''
@@ -26,8 +30,8 @@ class Record(dict, Unindexed):
         return dict.__setitem__(self, key, value)
 
     @staticmethod
-    def _missing(key):
-        raise Exception("Missing record key:" + key)
+    def missing(key):
+        raise Record_Exception("Missing record key:" + key)
 
     def instance(self):
         '''
@@ -37,14 +41,17 @@ class Record(dict, Unindexed):
         class Internal(Dictionary):
 
             def __init__(dictionary, mapping=None):
-                Dictionary.__init__(dictionary, mapping=mapping)
+                Dictionary.__init__(dictionary)
                 if self.autopopulate:
                     for key in self:
                         dictionary[key] = self[key]()
+                if mapping is not None and isinstance(mapping, Mapping):
+                    for key in mapping:
+                        dictionary[key] = mapping[key]
 
             def __setitem__(dictionary, key, value):
                 if key not in self:
-                    Record._missing(key)
+                    Record.missing(key)
                 dict.__setitem__(dictionary, key, self[key](value)) # cast type
 
         return Internal
@@ -53,7 +60,7 @@ class Test_Record(unittest.TestCase):
 
     def setUp(self):
 
-        def noname(x = None, default='ANONYMOUS'):
+        def noname(x=None, default='ANONYMOUS'):
             if x is None:
                 return default
             else:
@@ -71,8 +78,9 @@ class Test_Record(unittest.TestCase):
         self.Dog = record.instance()
 
     def test_defaults(self):
-        harley=self.Dog({'height':11})
+        harley = self.Dog({'height':11})
         assert len(harley) == len(self.Dog()) # because it's autopopulated
+        assert harley['height'] == 11
         assert harley['tail'] == 0
         assert harley['name'] == 'ANONYMOUS'
         harley['name'] = 'Mr. Rascal'
@@ -89,7 +97,7 @@ class Test_Record(unittest.TestCase):
         try:
             harley['teeth'] = 5 # this is not a valid key
             assert False
-        except:
+        except Record_Exception:
             pass
 
     def test_sizing(self):
@@ -106,7 +114,7 @@ class Test_Record(unittest.TestCase):
         for i in range(1, n):
             record[i] = i
             dictionary[i] = i
-        assert (sys.getsizeof(record) - sys.getsizeof(dictionary) < 20) # bytes
+        assert sys.getsizeof(record) - sys.getsizeof(dictionary) < 20 # bytes
 
 if __name__ == '__main__':
     unittest.main()

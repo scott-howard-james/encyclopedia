@@ -16,57 +16,6 @@ class To_KML():
     id = To.String.cast('')
     fraction = To.Fraction.cast(1)
 
-Coordinate = Record({
-    'uid':To_KML.uid, # track id, unique
-    'id':To_KML.id, # label, non-unique
-    'pid':To_KML.uid, # polygonal grouping id
-    'tick':To.integer, # UNIX time
-    'lat':To.signed_degree_90,
-    'lon':To.signed_degree,
-    'alt':To.numeric,
-    'description':To.string, # KML description
-    'point':To.string,# KML point string goes here
-    'time':To.string,# KML time string goes here
-    }, autopopulate=True).instance()
-
-Style = Record({
-    'id':str,
-    'show.fields':list,
-    'label.red':To_KML.fraction,
-    'label.blue':To_KML.fraction,
-    'label.green':To_KML.fraction,
-    'label.opacity':To_KML.fraction,
-    'label.scale':To.Integer.cast(1),
-    'label.color': To.string,
-    'line.width':To.abs_numeric,
-    'line.red':To_KML.fraction,
-    'line.blue':To_KML.fraction,
-    'line.green':To_KML.fraction,
-    'line.opacity':To_KML.fraction,
-    'line.width':To.abs_numeric,
-    'line.color': To.string,
-    'fill.red':To_KML.fraction,
-    'fill.blue':To_KML.fraction,
-    'fill.green':To_KML.fraction,
-    'fill.opacity':To_KML.fraction,
-    'fill.on':To.integer,
-    'fill.outline':To.integer,
-    'fill.color': To.string,
-    'list.mode':To_KML.listmode,
-    'list.red':To_KML.fraction,
-    'list.blue':To_KML.fraction,
-    'list.green':To_KML.fraction,
-    'list.opacity':To_KML.fraction,
-    'list.color': To.string,
-    'icon.shape':To.string,
-    'icon.scale':To.Integer.cast(1),
-    'icon.red':To_KML.fraction,
-    'icon.blue':To_KML.fraction,
-    'icon.green':To_KML.fraction,
-    'icon.opacity':To_KML.fraction,
-    'icon.color': To.string,
-    }, autopopulate=True).instance()
-
 class KML(XML):
     '''
     An encyclopedia-ified version of the KML (Keyhole Markup Language) GIS format.
@@ -88,7 +37,58 @@ class KML(XML):
 
     # spacing for writing Coordinates in at least a semi-pretty fashion ...
 
-    SPACER ='\n' + ' '*10
+    SPACER = '\n' + ' '*10
+
+    Coordinate = Record({
+        'uid':To_KML.uid, # track id, unique
+        'id':To.string, # label, non-unique
+        'pid':To_KML.uid, # polygonal grouping id
+        'tick':To.integer, # UNIX time
+        'lat':To.signed_degree_90,
+        'lon':To.signed_degree,
+        'alt':To.numeric,
+        'description':To.string, # KML description
+        'point':To.string,# KML point string goes here
+        'time':To.string,# KML time string goes here
+        }, autopopulate=True).instance()
+
+    Style = Record({
+        'id':str,
+        'show.fields':list,
+        'label.red':To_KML.fraction,
+        'label.blue':To_KML.fraction,
+        'label.green':To_KML.fraction,
+        'label.opacity':To_KML.fraction,
+        'label.scale':To.Integer.cast(1),
+        'label.color': To.string,
+        'line.width':To.abs_numeric,
+        'line.red':To_KML.fraction,
+        'line.blue':To_KML.fraction,
+        'line.green':To_KML.fraction,
+        'line.opacity':To_KML.fraction,
+        'line.width':To.abs_numeric,
+        'line.color':To.string,
+        'fill.red':To_KML.fraction,
+        'fill.blue':To_KML.fraction,
+        'fill.green':To_KML.fraction,
+        'fill.opacity':To_KML.fraction,
+        'fill.on':To.integer,
+        'fill.outline':To.integer,
+        'fill.color': To.string,
+        'list.mode':To_KML.listmode,
+        'list.red':To_KML.fraction,
+        'list.blue':To_KML.fraction,
+        'list.green':To_KML.fraction,
+        'list.opacity':To_KML.fraction,
+        'list.color': To.string,
+        'icon.shape':To.string,
+        'icon.scale':To.Integer.cast(1),
+        'icon.red':To_KML.fraction,
+        'icon.blue':To_KML.fraction,
+        'icon.green':To_KML.fraction,
+        'icon.opacity':To_KML.fraction,
+        'icon.color': To.string,
+        }, autopopulate=True).instance()
 
     # type conversion functions ...
 
@@ -105,11 +105,11 @@ class KML(XML):
         return str(float(nm) * 1852)
 
     @staticmethod
-    def _style(input):
+    def styled(record):
         '''
         create a KML style
         '''
-        style = Style(input)
+        style = KML.Style(record)
         for field in ['fill', 'line', 'icon', 'label', 'list']:
             style[field + '.color'] = ''.join([
                 Make.hex_string(style[field + '.opacity']),
@@ -120,13 +120,13 @@ class KML(XML):
         return style
 
     @staticmethod
-    def _coordinate(input, show_fields=None, altitude_in_feet=True):
+    def coordinated(record, show_fields=None, altitude_in_feet=True):
         '''
         create a KML coordinate
         '''
-        coordinate = Coordinate(input)
+        coordinate = KML.Coordinate(record)
         if show_fields is not None:
-            coordinate['description'] = '\n'.join([i+': '+str(input[i]) for i in show_fields])
+            coordinate['description'] = '\n'.join([i+': '+str(coordinate[i]) for i in show_fields])
         if not coordinate['time']:
             coordinate['time'] = unix2str(float(coordinate['tick']), '%Y-%m-%dT%H:%M:%SZ')
         if altitude_in_feet:
@@ -155,11 +155,11 @@ class KML(XML):
             self['kml'].set('xmlns:gx', gxmlns)
         XML.write(self, filename, doctype)
 
-    def stylize(self, input):
+    def stylize(self, record):
         '''
         create a KML style element
         '''
-        style = KML._style(input)
+        style = KML.styled(record)
         style_folder = style['id'] + '/Style'
         self['Document'] = style_folder
         self[style_folder].set('id', style['id'])
@@ -178,7 +178,7 @@ class KML(XML):
         self[substyle['poly'], 'fill'] = style['fill.on']
         self[substyle['line'], 'width'] = style['line.width']
 
-        if len(style['icon.shape']) > 0:
+        if style['icon.shape']:
             self[substyle['icon']] = substyle['icon'] + '/Icon'
             self[substyle['icon'] + '/Icon', 'href'] = style['icon.shape']
         self[substyle['list'], 'listItemType'] = style['list.mode']
@@ -196,10 +196,10 @@ class KML(XML):
                 tesselate,
                 altitude):
         '''
-        internal drawing function for a single geometry.  Classes inheriting KML may choose to use this directly.
+        internal drawing function for (starting) a single geometry.
+        Classes inheriting KML may choose to use this directly.
         '''
-
-        if geometry=='Model':
+        if geometry == 'Model':
             assert shape is not None
             assert scale is not None
             assert len(scale) == 3
@@ -207,32 +207,32 @@ class KML(XML):
         assert geometry in KML.GEOMETRIES
         assert altitude in KML.ALTITUDE_MODES
 
-        self[folder] = placemark=self.unique('Placemark')
-        self[placemark,'name'] = point['id']
+        self[folder] = placemark = self.unique('Placemark')
+        self[placemark, 'name'] = point['id']
 
         if 'description' in point:
-            self[placemark,'description'] = point['description']
-        self[placemark,'styleUrl'] = style['id']
+            self[placemark, 'description'] = point['description']
+        self[placemark, 'styleUrl'] = style['id']
 
         if geometry == 'Model':
-            self[placemark]=track=placemark + '/gx:Track'
-            self[track].set('id',point['id'])
-            self[track]=model=self.unique('Model')
-            self[model]=scaler=self.unique('Scale')
-            self[scaler,'x'] = scale[0]
-            self[scaler,'y'] = scale[1]
-            self[scaler,'z'] = scale[2]
-            self[model] =link=self.unique('Link')
-            self[link,'href'] = shape
-            self[track, 'gx:coord']=KML.SPACER + point['point']
-            self[track, 'altitudeMode']= altitude
+            self[placemark] = track = placemark + '/gx:Track'
+            self[track].set('id', point['id'])
+            self[track] = model = self.unique('Model')
+            self[model] = scaler = self.unique('Scale')
+            self[scaler, 'x'] = scale[0]
+            self[scaler, 'y'] = scale[1]
+            self[scaler, 'z'] = scale[2]
+            self[model] = link = self.unique('Link')
+            self[link, 'href'] = shape
+            self[track, 'gx:coord'] = KML.SPACER + point['point']
+            self[track, 'altitudeMode'] = altitude
             return track
         else:
-            self[placemark]=geom=self.unique(geometry)
-            self[geom].set('id',point['id'])
-            self[geom,'extrude']=To.integer(extrude)
-            self[geom,'tesselate']=To.integer(tesselate)
-            self[geom,'altitudeMode']= altitude
+            self[placemark] = geom = self.unique(geometry)
+            self[geom].set('id', point['id'])
+            self[geom, 'extrude'] = To.integer(extrude)
+            self[geom, 'tesselate'] = To.integer(tesselate)
+            self[geom, 'altitudeMode'] = altitude
             return geom
 
     def draw(self,
@@ -244,8 +244,7 @@ class KML(XML):
             scale=None,
             shape=None,
             tesselate=None,
-            altitude='absolute',
-            highlight=None):
+            altitude='absolute'):
 
         '''
         create a KML geometry in a specified folder using:
@@ -274,73 +273,66 @@ class KML(XML):
                 for tick in ticks:
                     self[element, 'when'] = tick
                 for coord in coords:
-                    self[element, 'gx:coord'] = coord.replace(',',' ') # different syntax than coordinate  ... for whatever reason :-/
+                    self[element, 'gx:coord'] = coord.replace(',', ' ') # different syntax than coordinate  ... for whatever reason :-/
             else:
                 self[element, 'coordinates'] = KML.SPACER + KML.SPACER.join(coords) # all in one element
 
         last = coords = ticks = None
         for p in points:
-            point = KML._coordinate(p, show_fields=style['show.fields'])
+            point = KML.coordinated(p, show_fields=style['show.fields'])
             if point['uid'] == last:
                 coords.append(point['point'])
                 ticks.append(point['tick'])
             else:
                 if last is not None:
-                    complete(drawn,coords,ticks)
+                    complete(drawn, coords, ticks)
                 last = point['uid']
-
-                if point['pid'] and geometry=='Polygon':
-                    self[poly]=inner=self.unique('innerBoundaryIs')
-                    self[inner]=drawn=self.unique('LinearRing')
-                else:
-                    drawn = self._draw(
-                        folder,
-                        point,
-                        geometry=geometry,
-                        scale=scale,
-                        style=style,
-                        shape=shape,
-                        extrude=extrude,
-                        tesselate=tesselate,
-                        altitude=altitude)
-                if not point['pid'] and geometry=='Polygon':
-                    poly=drawn
-                    self[poly]=outer=self.unique('outerBoundaryIs')
-                    self[outer]=drawn=self.unique('LinearRing')
-
+                drawn = self._draw(
+                    folder,
+                    point,
+                    geometry=geometry,
+                    scale=scale,
+                    style=style,
+                    shape=shape,
+                    extrude=extrude,
+                    tesselate=tesselate,
+                    altitude=altitude)
                 coords = [point['point']]
                 ticks = [point['tick']]
 
         if coords is not None:
-            complete(drawn,coords,ticks) # last one
+            complete(drawn, coords, ticks) # last one
 
 class Test_KML(unittest.TestCase):
 
     def test_style(self):
-        style = KML._style(Style())
+        style = KML.styled(KML.Style())
         assert style['line.color'] == 'FFFFFFFF'
         assert style['fill.color'] == 'FFFFFFFF'
 
     def test_kml(self):
-        kml = KML()
+        KML()
 
     def test_colors(self):
-        color=Style()
+        color = KML.Style()
         assert To.hex_string(color['line.red']) == 'FF'
         color['line.red'] = .5
         assert To.hex_string(color['line.red']) == '7F'
         assert color['icon.scale'] == 1
 
     def test_coordinates(self):
-        coordinate=Coordinate()
+        coordinate=KML.Coordinate({'uid':11})
+        assert coordinate['uid'] == '11'
         coordinate['lon'] = -182
         assert coordinate['lon'] == 178.
         coordinate['lon'] = coordinate['lon']
         assert coordinate['lon'] == 178.
         assert coordinate['pid'] == 'unknown'
         assert coordinate['id'] == ''
-        coordinate=KML._coordinate(Coordinate({'alt':0}))
+        coordinate=KML.coordinated(KML.Coordinate({'alt':0}))
         assert coordinate['point'] == '0,0,0.0'
+        coordinate['id'] = 11
+        assert coordinate['id'] == '11'
 
 if __name__ == '__main__':
     unittest.main()

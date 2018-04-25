@@ -12,6 +12,7 @@ from encyclopedia.relate import Test_Relation
 from encyclopedia.arboretum import Test_Arboretum
 from encyclopedia.xmlopedia import Test_XML
 from encyclopedia.kmlopedia import Test_KML
+from encyclopedia.kmlfolder import Test_KML_Folder
 
 '''
 Run regression tests on the base Encyclopedia classes
