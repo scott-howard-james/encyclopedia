@@ -20,9 +20,10 @@ class Record(dict, Unindexed):
     - optional defaults
     '''
 
-    def __init__(self, mapping=None, autopopulate=False):
+    def __init__(self, mapping=None, autopopulate=False, restrict=True):
         Unindexed.__init__(self, frozen=False, mapping=mapping)
         self.autopopulate = autopopulate
+        self.restrict = restrict
 
     def __setitem__(self, key, value):
         assert isinstance(value, types.FunctionType)
@@ -50,9 +51,14 @@ class Record(dict, Unindexed):
                         dictionary[key] = mapping[key]
 
             def __setitem__(dictionary, key, value):
-                if key not in self:
+                if key not in self and self.restrict:
                     Record.missing(key)
-                dict.__setitem__(dictionary, key, self[key](value)) # cast type
+                elif key not in self and not self.restrict:
+                    dict.__setitem__(dictionary, key, value) # set directly
+                elif key in self:
+                    dict.__setitem__(dictionary, key, self[key](value)) # cast type
+                else:
+                    assert False
 
         return Internal
 
@@ -75,6 +81,7 @@ class Test_Record(unittest.TestCase):
             },
             autopopulate=True
             )
+        self.record = record
         self.Dog = record.instance()
 
     def test_defaults(self):
@@ -94,11 +101,43 @@ class Test_Record(unittest.TestCase):
         harley = self.Dog()
         harley['tail'] = 3
         assert harley['tail'] == 3
+
+    def test_restrict(self):
+        attributes = {
+            'coat': str,
+            'tail':int,
+            'age':float,
+            'height':float
+            }
+
+        Purebred = Record(
+            attributes,
+            autopopulate=True,
+            restrict=True
+            ).instance()
+
+        harley = Purebred({'coat':'brown'})
+        harley['tail'] = 3
+        assert harley['tail'] == 3
+
         try:
             harley['teeth'] = 5 # this is not a valid key
             assert False
         except Record_Exception:
             pass
+
+        Mutt = Record(
+            attributes,
+            autopopulate=True,
+            restrict=False
+            ).instance()
+
+        harley = Mutt({'coat':'brown', 'demeanor':'feisty'})
+        assert harley['demeanor'] == 'feisty'
+        harley['tail'] = 3
+        assert harley['tail'] == 3
+        harley['teeth'] = 12 # this is not a valid key
+        assert harley['teeth'] == 12
 
     def test_sizing(self):
         '''

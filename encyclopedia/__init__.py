@@ -3,7 +3,7 @@ An Encyclopedia is an abstract container intended for smallish data sets which p
 the benefits of a relational (and non-relational) database but with lower syntactic friction
 '''
 
-__version__ = '0.28'
+__version__ = '0.29'
 
 # expose the primary concrete and abstract classes
 
@@ -15,3 +15,4 @@ from .record import Record
 from .arboretum import Arboretum
 from .xmlopedia import XML
 from .kmlopedia import KML
+from .kmlfolder import KML_Folder

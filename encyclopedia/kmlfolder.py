@@ -33,18 +33,27 @@ class KML_Folder():
             extrude=self.tree[node, 'extrude'],
             altitude=self.tree[node, 'altmode'])
 
+    @staticmethod
+    def foldered(value):
+        FOLDER_HEADER = 'Folder'
+        if value.split('/')[-1] != FOLDER_HEADER:
+            return value + '/' + FOLDER_HEADER
+        else:
+            return value
+
     def __setitem__(self, key, value):
         self.tree[key] = value
         if not isinstance(key, tuple):
-            self.kml[self.folders[key]] = folder = value + '/Folder'
-            self.kml[folder, 'name'] = value.split('/')[-1]
+            self.kml[self.folders[key]] = folder = KML_Folder.foldered(value)
+            self.kml[folder, 'name'] = folder.split('/')[-2]
             self.folders[value] = folder
+        return self
 
     def __getitem__(self, key):
         return self.kml[self.folders[key]]
 
     def unique(self,thing):
-        return self.tree.unique(thing)
+        return self.kml.unique(KML_Folder.foldered(thing))
 
     def write(self, file):
         self.kml.write(file)

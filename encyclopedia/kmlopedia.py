@@ -1,7 +1,6 @@
 # standard
 import unittest
 # internal
-from bits.file import Text
 from bits.time import unix2str
 from bits.cast import To, Cast, Make
 from encyclopedia import Record, XML
@@ -50,7 +49,7 @@ class KML(XML):
         'description':To.string, # KML description
         'point':To.string,# KML point string goes here
         'time':To.string,# KML time string goes here
-        }, autopopulate=True).instance()
+        }, autopopulate=True, restrict=False).instance()
 
     Style = Record({
         'id':str,
