@@ -12,7 +12,7 @@ class Record(dict, Unindexed):
     A factory creating Encyclopedia-ified Dictionaries with:
 
     - restricted keys
-    - automatic type conversions and restrictions
+    - automatic type conversions
     - optional defaults
     '''
 
@@ -47,7 +47,7 @@ class Record(dict, Unindexed):
                     Record._missing(key)
                 dict.__setitem__(dictionary, key, self[key](value)) # cast type
 
-        return Internal()
+        return Internal
 
 class Test_Record(unittest.TestCase):
 
@@ -68,10 +68,10 @@ class Test_Record(unittest.TestCase):
             },
             autopopulate=True
             )
-        self.Dog = record.instance
+        self.Dog = record.instance()
 
     def test_defaults(self):
-        harley=self.Dog()
+        harley=self.Dog({'height':11})
         assert len(harley) == len(self.Dog()) # because it's autopopulated
         assert harley['tail'] == 0
         assert harley['name'] == 'ANONYMOUS'
@@ -94,13 +94,14 @@ class Test_Record(unittest.TestCase):
 
     def test_sizing(self):
         '''
-        assure that the resultant dictionaries do not chew up memory
-        Note: can also use https://pypi.python.org/pypi/Pympler to confirm this but
-        chose minimize external dependencies
+        assure that the resultant record/dictionaries do not chew up memory unnecessarily
+
+        Note: can also use https://pypi.python.org/pypi/Pympler to confirm this but instead
+        chose to minimize external dependencies
         '''
         n = 10**4
         keys = range(1, n)
-        record = Record({key:int for key in keys}).instance()
+        record = Record({key:int for key in keys}).instance()()
         dictionary = {}
         for i in range(1, n):
             record[i] = i

@@ -13,4 +13,5 @@ from .relate import Relation, Isomorphism, Function, Partition
 from .forest import Forest
 from .record import Record
 from .arboretum import Arboretum
-from .xmltree import XML
+from .xmlopedia import XML
+from .kmlopedia import KML

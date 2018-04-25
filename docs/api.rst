@@ -69,6 +69,12 @@ XML
 .. autoclass:: encyclopedia.XML
     :members:
 
+KML
+-----------
+
+.. autoclass:: encyclopedia.KML
+    :members:
+
 Utility Classes
 =======================
 
