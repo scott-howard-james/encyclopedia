@@ -166,6 +166,9 @@ class XML():
                 elem.tail = i
 
     def unique(self, name):
+        '''
+        create a unique element name
+        '''
         if name not in self.elements:
             return name
         else:
@@ -183,7 +186,7 @@ class XML():
         def _write(f):
             f.write('<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n')
             if doctype is not None:
-                f.write('<!DOCTYPE ' + self.doctype + '>\n')
+                f.write('<!DOCTYPE ' + doctype + '>\n')
             etree.write(f, encoding='unicode')
 
         if filename is not None:

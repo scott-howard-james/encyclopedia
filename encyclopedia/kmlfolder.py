@@ -2,16 +2,17 @@
 import unittest
 from tempfile import NamedTemporaryFile
 # internal
-from encyclopedia import KML, Arboretum
+from encyclopedia import Unindexed, KML, Arboretum
 
-class KML_Folder():
+class KML_Folder(Unindexed):
 
     def __init__(self, filename=None):
-        self.kml = KML()
+        Unindexed.__init__(self)
+        self.kml = KML() # the final KML output
         base = 'Document'
-        self.tree = Arboretum()
+        self.tree = Arboretum() # the attribute tree
         self.tree += base
-        self.folders = {}
+        self.folders = {} # mapping from the folder name to KML element
         self.styles = {}
         self.folders[base] = base
         self.tree[base, 'altmode'] = 'absolute'
@@ -35,6 +36,9 @@ class KML_Folder():
 
     @staticmethod
     def foldered(value):
+        '''
+        assure that KML_Folder only creates Folder(s)
+        '''
         FOLDER_HEADER = 'Folder'
         if value.split('/')[-1] != FOLDER_HEADER:
             return value + '/' + FOLDER_HEADER
@@ -52,7 +56,21 @@ class KML_Folder():
     def __getitem__(self, key):
         return self.kml[self.folders[key]]
 
-    def unique(self,thing):
+    def __delitem__(self, key):
+        del self.folders[key]
+        del self.tree[key]
+        del self.kml[key]
+
+    def __iter__(self):
+        yield from self.tree
+
+    def __len__(self):
+        return len(self.tree)
+
+    def unique(self, thing):
+        '''
+        create a unique folder name for the KML_Folder
+        '''
         return self.kml.unique(KML_Folder.foldered(thing))
 
     def write(self, file):
@@ -67,8 +85,7 @@ class KML_Folder():
 class Test_KML_Folder(unittest.TestCase):
 
     def test_basic(self):
-        # with NamedTemporaryFile() as f:
-        with open('foo.kml','w') as f:
+        with NamedTemporaryFile() as f:
             with KML_Folder(f.name) as kt:
                 kt.stylize(
                 {
@@ -111,6 +128,8 @@ class Test_KML_Folder(unittest.TestCase):
                     {'uid':3, 'id':13, 'lat':21, 'lon':22, 'alt':-2}
                 ]
                 kt.draw('S1/T2', data)
+                # check some things
+                assert len(kt) == len(list(kt))
 
 if __name__ ==  '__main__':
     unittest.main()

@@ -15,6 +15,18 @@ class Unindexed(MutableMapping):
 
     '''
 
+    @abstractmethod
+    def __setitem__(self, key, value):
+        pass
+
+    @abstractmethod
+    def __getitem__(self, key):
+        pass
+
+    @abstractmethod
+    def __delitem__(self, key, value):
+        pass
+
     def __init__(self, mapping=None, frozen=False):
         '''
         - mapping: initialize the Encyclopedia with another mapping
@@ -145,6 +157,7 @@ class Indexed(Unindexed):
 class Unity(Indexed):
 
     def __init__(self):
+        Indexed.__init__(self)
         self.freeze()
 
     @Indexed.unfrozen
@@ -156,17 +169,17 @@ class Unity(Indexed):
         pass
 
     @Indexed.unfrozen
-    def subtract(self,other):
+    def subtract(self, other):
         pass
 
     def __getitem__(self, key):
         return key
 
-    def compose(self,other):
+    def compose(self, other):
         return other.copy()
 
     def __len__(self):
-        return None
+        return 0
 
     def __iter__(self):
         for i in range(0):
@@ -204,6 +217,7 @@ class Signed(Indexed):
 class Zero(Signed):
 
     def __init__(self):
+        Signed.__init__(self)
         self.freeze()
 
     @Indexed.unfrozen

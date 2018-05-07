@@ -424,7 +424,7 @@ class Forest(Unindexed):
             del new[other]
         return new
 
-    def unique(self):
+    def prune(self):
         '''
         eliminate duplicate trees in a forest
         '''
@@ -521,7 +521,7 @@ class Test_Forest(unittest.TestCase):
         assert len(f3) == 0
         f3 = f2 + f1
         assert len(f3) == 3*len(f1)
-        f4 = f3.unique()
+        f4 = f3.prune()
         assert len(f4) == len(f1)
         assert f4 == f1
         f5 = f1 - f2
