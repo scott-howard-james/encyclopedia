@@ -11,7 +11,7 @@ class Unindexed(MutableMapping):
 
     - **composition**: Encyclopedia contents may be altered by functions or Encyclopedias
     - **set operation**: Encyclopedias may be combined using union, difference and intersection
-    - **mutability**: ability to "freeze" and "melt" an object, that is, change its mutability
+    - **mutability**: ability to "freeze" and "melt" an object
 
     '''
 
@@ -24,7 +24,7 @@ class Unindexed(MutableMapping):
         pass
 
     @abstractmethod
-    def __delitem__(self, key, value):
+    def __delitem__(self, key):
         pass
 
     def __init__(self, mapping=None, frozen=False):
@@ -60,13 +60,13 @@ class Unindexed(MutableMapping):
     @staticmethod
     def identity(thing):
         '''
-        a single input, single output identity function
+        a single-input-single-output identity function
         '''
         return thing
 
     def copy(self):
         '''
-        perform a "deep" copy
+        perform a deep copy
         '''
         return copy.deepcopy(self)
 
@@ -191,7 +191,7 @@ class Unity(Indexed):
 class Signed(Indexed):
     '''
     A *Signed Encyclopedia* may contain negative elements, that is, elements which
-    cancel similarly keyed elements
+    "cancel" similarly keyed elements
     '''
 
     @abstractmethod

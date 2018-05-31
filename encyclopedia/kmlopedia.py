@@ -172,9 +172,13 @@ class KML(XML):
         for kind in ['label', 'icon']:
             self[substyle[kind], 'scale'] = style[kind + '.scale']
 
-        self[substyle['poly'], 'color'] = style['fill.color']
         self[substyle['poly'], 'outline'] = style['fill.outline']
         self[substyle['poly'], 'fill'] = style['fill.on']
+        if style['fill.on']:
+            self[substyle['poly'], 'color'] = style['fill.color']
+        else:
+            self[substyle['poly'], 'color'] = style['line.color']
+
         self[substyle['line'], 'width'] = style['line.width']
 
         if style['icon.shape']:
@@ -232,6 +236,9 @@ class KML(XML):
             self[geom, 'extrude'] = To.integer(extrude)
             self[geom, 'tesselate'] = To.integer(tesselate)
             self[geom, 'altitudeMode'] = altitude
+            if geometry == 'Polygon':
+                self[geom]=outer=self.unique('outerBoundaryIs')
+                self[outer]=geom=self.unique('LinearRing')
             return geom
 
     def draw(self,
@@ -296,6 +303,7 @@ class KML(XML):
                     extrude=extrude,
                     tesselate=tesselate,
                     altitude=altitude)
+
                 coords = [point['point']]
                 ticks = [point['tick']]
 
@@ -320,7 +328,7 @@ class Test_KML(unittest.TestCase):
         assert color['icon.scale'] == 1
 
     def test_coordinates(self):
-        coordinate=KML.Coordinate({'uid':11})
+        coordinate = KML.Coordinate({'uid':11})
         assert coordinate['uid'] == '11'
         coordinate['lon'] = -182
         assert coordinate['lon'] == 178.
@@ -328,7 +336,7 @@ class Test_KML(unittest.TestCase):
         assert coordinate['lon'] == 178.
         assert coordinate['pid'] == 'unknown'
         assert coordinate['id'] == ''
-        coordinate=KML.coordinated(KML.Coordinate({'alt':0}))
+        coordinate = KML.coordinated(KML.Coordinate({'alt':0}))
         assert coordinate['point'] == '0,0,0.0'
         coordinate['id'] = 11
         assert coordinate['id'] == '11'

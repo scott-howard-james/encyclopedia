@@ -11,7 +11,7 @@ from encyclopedia.arboretum import Arboretum
 class XML():
     '''
     Forest syntax combined with an elementTree XML implementation.
-    To avoid confusion, inherits from neither elementTree nor Arboretum directly,
+    To avoid internal confusion, inherits from neither elementTree nor Arboretum directly,
     thus the tree(forest) is stored *in parallel* to the elementTree structure
     '''
     FOLD = '/' # use this delimeter to create unique identifiers
@@ -54,11 +54,11 @@ class XML():
         yield from it
 
     @staticmethod
-    def traverse (element, tag=None):
+    def traverse(element, tag=None):
         yield from XML._iterate(element, recursive=False, tag=tag)
 
     @staticmethod
-    def recurse (element, tag=None):
+    def recurse(element, tag=None):
         yield from XML._iterate(element, recursive=True, tag=tag)
 
     def _read(self, element, name, level):
@@ -152,7 +152,7 @@ class XML():
     @staticmethod
     def _indent(elem, level=0):
         i = '\n' + level * '  '
-        if len(elem):
+        if elem:
             if not elem.text or not elem.text.strip():
                 elem.text = i + '  '
             if not elem.tail or not elem.tail.strip():

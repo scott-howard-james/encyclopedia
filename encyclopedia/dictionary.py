@@ -14,8 +14,8 @@ class Dictionary(dict, Unindexed):
 class Test_Dictionary(unittest.TestCase):
 
     def test_basic(self):
-        mammals = Dictionary({'dog':'furry','kangaroo':'bouncy','tiger':'in Africa?'})
-        fish = Dictionary({'catfish':'slimey','salmon':'suspicious','charlie':'left us'})
+        mammals = Dictionary({'dog':'furry', 'kangaroo':'bouncy', 'tiger':'in Africa?'})
+        fish = Dictionary({'catfish':'slimey', 'salmon':'suspicious', 'charlie':'left us'})
         creatures = mammals + fish
         assert len(creatures) == len(fish) + len(mammals)
         creatures -= fish

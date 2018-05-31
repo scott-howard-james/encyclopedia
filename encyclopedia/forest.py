@@ -1,6 +1,5 @@
 # standard
 import unittest
-import hashlib
 import types
 # internal
 from encyclopedia.templates import Unindexed
@@ -9,21 +8,21 @@ from encyclopedia.relate import Relation
 class Forest(Unindexed):
     '''
     An Encyclopedia of trees <https://en.wikipedia.org/wiki/Tree_(graph_theory)>.
-    There is no specific "Tree" class; instead, a Tree is Forest with a single
-    connected (tree) graph.  This is purposeful as adding two Trees creates a Forest, not another Tree.
+    There is no specific "Tree" class; instead, a Tree is Forest with a single,
+    connected graph.  This is purposeful, as adding two Trees creates a Forest, not another Tree.
 
-    Terminology for Forest class:
+    Terminology for the Forest class:
 
     - *Tree*: single, connected (tree) graph
-    - *Forest*: a (possibly empty) collection of Trees, supporting Encyclopedia operations
+    - *Forest*: a (possibly empty) collection of Trees, supporting encyclopedic operations
     - *Node*: a single node in a graph
     - *Twig*: a connected pair of nodes
     - *Sprout*: a new, connected node
 
     '''
     def __init__(self,
-        offset:int = 0, # starting node counter
-        parent = None):# for future use ...
+        offset: int = 0, # starting node counter
+        parent=None):# for future use ...
         '''
         create the forest
         '''
@@ -109,7 +108,7 @@ class Forest(Unindexed):
 
         def identified(self,
                 identified: bool, # return fullNode
-                off: int=0,
+                off: int = 0,
             ):
             '''
             return either an offset Node ID or simply the alias
@@ -138,7 +137,7 @@ class Forest(Unindexed):
 
     def above(self,
             alias, # start here
-            aliased = False, # return just alias
+            aliased=False, # return just alias
             ):
         '''
         generate nodes above aliased node(s)
@@ -157,15 +156,15 @@ class Forest(Unindexed):
 
     def below(self,
         alias, # start here
-        aliased = False, # return just alias
+        aliased=False, # return just alias
         ):
         '''
         generate parent below aliased node(ss)
         '''
         for node in self.aliased(alias):
             if node in ~self.nodes:
-                next = (~self.nodes)[node]
-                yield next.alias if aliased else next
+                other = (~self.nodes)[node]
+                yield other.alias if aliased else other
 
     def root(self, alias=None):
         '''
@@ -212,7 +211,7 @@ class Forest(Unindexed):
         return new
 
     def climb(self,
-            alias = None, # start here; when None start at tree roots
+            alias=None, # start here; when None start at tree roots
             level: bool = False, # include level in iterator
             twig: bool = False, # return connective (lower, upper) pair instead of just node
             identified: bool = True, # when True use full Node ID, when False just use aliases
@@ -229,7 +228,7 @@ class Forest(Unindexed):
 
         def token(lower, upper=None):
             if level:
-                height = (self.levels[node],)
+                height = (self.levels[node],) # ?! yikes, need to make this explicit
             else:
                 height = ()
             if upper is None:
@@ -262,10 +261,10 @@ class Forest(Unindexed):
         '''
         nodes = list(
             self.climb(alias,
-                level = True, # need this to topologically sort
-                offset = offset,
-                identified = identified,
-                twig = twig))
+                level=True, # need this to topologically sort
+                offset=offset,
+                identified=identified,
+                twig=twig))
         if not level: # get rid of the level if not requested
             if twig:
                 nodes = [(lower, upper) for lvl, lower, upper in nodes]
@@ -299,7 +298,7 @@ class Forest(Unindexed):
         return Forest.equals(self, other)
 
     def cutting(self,
-            alias = None,
+            alias=None,
             identified: bool = True,
             offset: int = 0,
             morph: types.FunctionType = Unindexed.identity, # modify keys/values upon entry
@@ -310,7 +309,7 @@ class Forest(Unindexed):
         def morphed(node):
             if isinstance(node, Forest.Node):
                 alias = morph(node.alias)
-                return Forest.Node(alias,node.id) if alias is not None else None
+                return Forest.Node(alias, node.id) if alias is not None else None
             else:
                 return morph(node)
 
@@ -347,8 +346,8 @@ class Forest(Unindexed):
             nodes = list(gravity(node))
             nodes.reverse()
             new += nodes[0] # the tree root
-            for i,node in enumerate(nodes[1:]):
-                new[nodes[i]] = node
+            for i, other in enumerate(nodes[1:]):
+                new[nodes[i]] = other
         return new
 
     def __getitem__(self, alias):
@@ -356,7 +355,7 @@ class Forest(Unindexed):
 
     def graft(self,
             forest,
-            alias = None,
+            alias=None,
             identified: bool = True,
         ):
         '''
@@ -364,10 +363,10 @@ class Forest(Unindexed):
         '''
         def grow(offset):
             for lower, upper in forest.sorted(
-                    twig = True,
-                    level = False,
-                    offset = offset,
-                    identified = identified):
+                    twig=True,
+                    level=False,
+                    offset=offset,
+                    identified=identified):
                 self._add_twig(lower, upper)
 
         if alias is not None: # graft to aliased nodes
@@ -386,9 +385,9 @@ class Forest(Unindexed):
     def __setitem__(self, lower, upper):
         if isinstance(upper, Forest):
             self.graft(
-                alias = lower,
-                forest = upper,
-                identified = True)
+                alias=lower,
+                forest=upper,
+                identified=True)
         else:
             self._add_twig(lower, upper)
 
@@ -401,9 +400,9 @@ class Forest(Unindexed):
         '''
         if isinstance(other, Forest):
             self.graft(
-                alias = None,
-                forest = other,
-                identified = True)
+                alias=None,
+                forest=other,
+                identified=True)
         else:
             self._add_tree(other)
         return self
@@ -485,7 +484,7 @@ class Test_Forest(unittest.TestCase):
         f['G21'] = 'G32'
         f['G21'] = 'G33'
         f['G32'] = 'G41'
-        f +=  'G02'
+        f += 'G02'
 
     def test_base(self):
         f1 = self.f
@@ -555,7 +554,7 @@ class Test_Forest(unittest.TestCase):
         assert f1['G21'] == f2['G21']
         assert f1['G21'] != f1['G01']
         assert f1 == f2
-        f2['G02'] =f2['G21']
+        f2['G02'] = f2['G21']
         assert len(f2) > len(f1)
         assert not Forest.equals(f1, f2)
         assert f1 != f2
@@ -617,7 +616,7 @@ class Test_Forest(unittest.TestCase):
 
     def test_limb(self):
         f1 = self.f.limb('G41')
-        assert f1.sorted(aliased=True) == ['G01','G11','G21','G32','G41']
+        assert f1.sorted(aliased=True) == ['G01', 'G11', 'G21', 'G32', 'G41']
 
 if __name__ == '__main__':
     unittest.main()
