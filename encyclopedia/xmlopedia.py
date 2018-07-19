@@ -69,15 +69,24 @@ class XML():
             else:
                 return s
 
+        def attribute(name, element):
+            for key, value in element.items():
+                self[name].set(key, value)
+
         if level == 0:
             name = clean(element.tag)
             self._create(name)
-        for key, value in element.items():
-            self[name].set(key, value)
+
+        attribute(name, element)
         for other in list(element):
             tag = clean(other.tag)
-            if len(list(other)) == 0:
-                self[name, tag] = other.text
+            if not list(other):
+                if not other.attrib:
+                    self[name, tag] = other.text
+                else: # special case where component ID stored in attribute
+                    for value in other.attrib.values():
+                        self[name, value] = other.text
+                        break # just going to use the first one we find and ignore the rest
             else:
                 self[name] = oname = self.unique(tag)
                 self._read(other, oname, level+1)

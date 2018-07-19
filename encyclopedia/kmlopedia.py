@@ -337,7 +337,7 @@ class Test_KML(unittest.TestCase):
         assert coordinate['pid'] == 'unknown'
         assert coordinate['id'] == ''
         coordinate = KML.coordinated(KML.Coordinate({'alt':0}))
-        assert coordinate['point'] == '0,0,0.0'
+        assert coordinate['point'] == '0.0,0.0,0.0'
         coordinate['id'] = 11
         assert coordinate['id'] == '11'
 

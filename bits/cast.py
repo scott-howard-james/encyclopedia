@@ -82,11 +82,11 @@ class Make():
         return float(x) and (1, -1)[float(x) < 0]
 
     @staticmethod
-    def degree(x=0):
-        return x%360
+    def degree(x=0.0):
+        return float(x)%360
 
     @staticmethod
-    def signed_degree(x=0):
+    def signed_degree(x=0.0):
         y = Make.degree(x)
         return y - 360 if y > 180 else y
 
@@ -233,7 +233,7 @@ class Test_Cast(unittest.TestCase):
         assert To.signed_degree(180.1) == -179.9
         assert To.degree(181) == 181
         assert To.signed_degree() == 0
-        assert To.degree() is 0
+        assert To.degree() == 0.0
         assert To.degree(181+360*10) == 181
 
 if __name__ == '__main__':
