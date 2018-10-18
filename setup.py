@@ -98,6 +98,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 
     # This field adds keywords for your project which will appear on the
@@ -123,7 +124,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    #install_requires=['peppercorn'],  # Optional
+    install_requires=['nits'],
 
     python_requires='>=3.4',
     # List additional groups of dependencies here (e.g. development

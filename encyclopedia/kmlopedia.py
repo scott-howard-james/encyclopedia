@@ -1,8 +1,8 @@
 # standard
 import unittest
 # internal
-from bits.time import unix2str
-from bits.cast import To, Cast, Make
+from nits.time import unix2str
+from nits.cast import To, Cast, Make
 from encyclopedia import Record, XML
 
 class To_KML():
@@ -288,7 +288,7 @@ class KML(XML):
             point = KML.coordinated(p, show_fields=style['show.fields'])
             if point['uid'] == last:
                 coords.append(point['point'])
-                ticks.append(point['tick'])
+                ticks.append(point['time'])
             else:
                 if last is not None:
                     complete(drawn, coords, ticks)
@@ -305,7 +305,7 @@ class KML(XML):
                     altitude=altitude)
 
                 coords = [point['point']]
-                ticks = [point['tick']]
+                ticks = [point['time']]
 
         if coords is not None:
             complete(drawn, coords, ticks) # last one

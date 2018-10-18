@@ -74,25 +74,3 @@ KML
 
 .. autoclass:: encyclopedia.KML
     :members:
-
-Utility Classes
-=======================
-
-Casting
---------
-
-.. autoclass:: bits.cast.Cast
-    :members: __init__, cast
-
-File Handling
----------------
-
-.. autoclass:: bits.file.File
-    :members:
-
-.. autoclass:: bits.file.Text
-    :members:
-
-.. autoclass:: bits.file.CSV
-    :members:
-

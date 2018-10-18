@@ -1,9 +1,6 @@
 # standard
 import unittest
 # import the unittests ...
-from bits.file import Test_File
-from bits.time import Test_Time
-from bits.cast import Test_Cast
 from encyclopedia.templates import Test_Encyclopedia
 from encyclopedia.dictionary import Test_Dictionary
 from encyclopedia.record import Test_Record
