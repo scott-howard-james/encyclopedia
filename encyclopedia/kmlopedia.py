@@ -126,8 +126,7 @@ class KML(XML):
         coordinate = KML.Coordinate(record)
         if show_fields is not None:
             coordinate['description'] = '\n'.join([i+': '+str(coordinate[i]) for i in show_fields])
-        if not coordinate['time']:
-            coordinate['time'] = unix2str(float(coordinate['tick']), '%Y-%m-%dT%H:%M:%SZ')
+        coordinate['time'] = unix2str(float(coordinate['tick']), '%Y-%m-%dT%H:%M:%SZ')
         if altitude_in_feet:
             coordinate['alt'] = KML.feet2meter(coordinate['alt'])
         if not coordinate['point']:

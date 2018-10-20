@@ -3,7 +3,7 @@ An Encyclopedia is an abstract container intended for smallish data sets which p
 the benefits of a relational (and non-relational) database but with lower syntactic friction
 '''
 
-__version__ = '0.32'
+__version__ = '0.33'
 
 # expose the primary concrete and abstract classes
 
