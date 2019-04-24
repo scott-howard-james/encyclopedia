@@ -1,0 +1,2 @@
+encyclopedia==0.33
+nits==0.12
