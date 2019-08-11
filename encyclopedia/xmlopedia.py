@@ -6,7 +6,6 @@ import sys
 import unittest
 import xml.etree.ElementTree as et
 # internal
-from encyclopedia.arboretum import Arboretum
 
 class XML():
     '''
@@ -19,13 +18,10 @@ class XML():
     def __init__(self):
         self.counter = 0
         self.root = None
-        self.forest = None
         self.elements = None
 
     def _create(self, root):
         assert root is not None
-        self.forest = Arboretum()
-        self.forest += root
         self.elements = {root:et.Element(root)}
         self.root = root
 
@@ -35,7 +31,7 @@ class XML():
         return self
 
     def __str__(self):
-        return str(self.forest)
+        return str(self.elements)
 
 # reading functions
 
@@ -116,37 +112,21 @@ class XML():
         yield from self.iterate()
 
     def __len__(self):
-        return len(self.forest)
-
-    def height(self):
-        return self.forest.height()
-
-    def below(self, key):
-        return self.forest.below(key).__next__().alias
-
-    def above(self, key):
-        yield from self.forest.above(key, aliased=True)
-
-    def nodes(self):
-        yield from self.forest.sorted(aliased=True)
+        return len(self.elements)
 
 # writing/assigning functions
 
     def __delitem__(self, key):
-        assert self.forest is not None
         assert key != self.root
-        parent = self.below(key)
         element = self.elements[key]
         element.clear()
-        self.elements[parent].remove(element)
-        del self.forest[key]
         del self.elements[key]
 
     def __getitem__(self, key):
         if not isinstance(key, tuple):
             return self.elements[key]
         else:
-            return self.forest[key]
+            assert False
 
     def __setitem__(self, key, value):
         if not isinstance(key, tuple):
@@ -156,7 +136,6 @@ class XML():
             node, attr = key
             thing = et.SubElement(self.elements[node], attr)
             thing.text = str(value)
-        self.forest[key] = value
 
     @staticmethod
     def _indent(elem, level=0):
@@ -224,7 +203,6 @@ class Test_XML(unittest.TestCase):
             xc = xt.copy()
             xc.write(f.name)
             xs = XML.read(f.name)
-        assert str(xs) == str(xc) == str(xt)
         assert et.tostring(xt.elements[xt.root]) == et.tostring(xs.elements[xs.root])
         assert et.tostring(xt.elements[xt.root]) != et.tostring(xc.elements[xc.root]) # because, tabs
 
@@ -232,10 +210,8 @@ class Test_XML(unittest.TestCase):
         xt = self.xt
         xc = xt.copy()
         del xc['4/Placemark']
-        assert xt.height() == xc.height()
         assert len(xc)+1 == len(xt)
         del xc['Document']
-        assert xc.height() == 0
 
     def test_iterate(self):
         xt = self.xt
