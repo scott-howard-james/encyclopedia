@@ -6,8 +6,9 @@ import sys
 import unittest
 import xml.etree.ElementTree as et
 # internal
+from encyclopedia.templates import Unindexed
 
-class XML():
+class XML(Unindexed):
     '''
     Forest syntax combined with an elementTree XML implementation.
     To avoid internal confusion, inherits from neither elementTree nor Arboretum directly,

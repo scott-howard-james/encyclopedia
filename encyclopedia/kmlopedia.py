@@ -2,7 +2,7 @@
 import unittest
 # internal
 from nits.time import unix2str
-from nits.cast import To, Cast, Make
+from nits.cast import To, cast
 from encyclopedia import Record, XML
 
 class To_KML():
@@ -10,10 +10,10 @@ class To_KML():
     def make_listmode(u=None):
         return 'check' if u is None else u
 
-    listmode = Cast(make_listmode).cast()
-    uid = To.String.cast('unknown')
-    id = To.String.cast('')
-    fraction = To.Fraction.cast(1)
+    listmode = cast(make_listmode)
+    uid = cast(To.string, 'unknown')
+    id = cast(To.string, '')
+    fraction = cast(To.fraction, 1)
 
 class KML(XML):
     '''
@@ -58,7 +58,7 @@ class KML(XML):
         'label.blue':To_KML.fraction,
         'label.green':To_KML.fraction,
         'label.opacity':To_KML.fraction,
-        'label.scale':To.Integer.cast(1),
+        'label.scale':cast(To.integer, 1),
         'label.color': To.string,
         'line.width':To.abs_numeric,
         'line.red':To_KML.fraction,
@@ -81,7 +81,7 @@ class KML(XML):
         'list.opacity':To_KML.fraction,
         'list.color': To.string,
         'icon.shape':To.string,
-        'icon.scale':To.Integer.cast(1),
+        'icon.scale':cast(To.integer, 1),
         'icon.red':To_KML.fraction,
         'icon.blue':To_KML.fraction,
         'icon.green':To_KML.fraction,
@@ -111,10 +111,10 @@ class KML(XML):
         style = KML.Style(record)
         for field in ['fill', 'line', 'icon', 'label', 'list']:
             style[field + '.color'] = ''.join([
-                Make.hex_string(style[field + '.opacity']),
-                Make.hex_string(style[field + '.blue']),
-                Make.hex_string(style[field + '.green']),
-                Make.hex_string(style[field + '.red'])
+                To.hex_string(style[field + '.opacity']),
+                To.hex_string(style[field + '.blue']),
+                To.hex_string(style[field + '.green']),
+                To.hex_string(style[field + '.red'])
                 ])
         return style
 
