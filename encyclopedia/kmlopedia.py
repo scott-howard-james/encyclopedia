@@ -226,7 +226,6 @@ class KML(XML):
             self[scaler, 'z'] = scale[2]
             self[model] = link = self.unique('Link')
             self[link, 'href'] = shape
-            self[track, 'gx:coord'] = KML.SPACER + point['point']
             self[track, 'altitudeMode'] = altitude
             return track
         else:
@@ -271,9 +270,7 @@ class KML(XML):
             '''
             finish creating a geometric element
             '''
-            if geometry == 'Model':
-                pass
-            elif geometry == 'gx:Track':
+            if geometry in ['gx:Track', 'Model']:
                 assert len(ticks) == len(coords)
                 for tick in ticks:
                     self[element, 'when'] = tick
