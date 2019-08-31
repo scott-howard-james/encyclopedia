@@ -87,6 +87,13 @@ class KML(XML):
         'icon.green':To_KML.fraction,
         'icon.opacity':To_KML.fraction,
         'icon.color': To.string,
+        'model.shape': To.string,
+        'model.xscale': cast(To.numeric, 1),
+        'model.yscale': cast(To.numeric, 1),
+        'model.zscale': cast(To.numeric, 1),
+        'model.heading': To.degree,
+        'model.roll': To.signed_degree,
+        'model.tilt': To.signed_degree,
         }, autopopulate=True).instance()
 
     # type conversion functions ...
@@ -192,9 +199,7 @@ class KML(XML):
                 point, # single point
                 geometry,
                 extrude,
-                scale,
                 style,
-                shape,
                 tesselate,
                 altitude):
         '''
@@ -202,9 +207,7 @@ class KML(XML):
         Classes inheriting KML may choose to use this directly.
         '''
         if geometry == 'Model':
-            assert shape is not None
-            assert scale is not None
-            assert len(scale) == 3
+            assert style['model.shape'] is not None
 
         assert geometry in KML.GEOMETRIES
         assert altitude in KML.ALTITUDE_MODES
@@ -221,11 +224,15 @@ class KML(XML):
             self[track].set('id', point['id'])
             self[track] = model = self.unique('Model')
             self[model] = scaler = self.unique('Scale')
-            self[scaler, 'x'] = scale[0]
-            self[scaler, 'y'] = scale[1]
-            self[scaler, 'z'] = scale[2]
+            self[scaler, 'x'] = style['model.xscale']
+            self[scaler, 'y'] = style['model.yscale']
+            self[scaler, 'z'] = style['model.zscale']
+            self[model] = orientation = self.unique('Orientation')
+            self[orientation, 'tilt'] = style['model.tilt']
+            self[orientation, 'roll'] = style['model.roll']
+            self[orientation, 'heading'] = style['model.heading']
             self[model] = link = self.unique('Link')
-            self[link, 'href'] = shape
+            self[link, 'href'] = style['model.shape']
             self[track, 'altitudeMode'] = altitude
             return track
         else:
@@ -235,8 +242,8 @@ class KML(XML):
             self[geom, 'tesselate'] = To.integer(tesselate)
             self[geom, 'altitudeMode'] = altitude
             if geometry == 'Polygon':
-                self[geom]=outer=self.unique('outerBoundaryIs')
-                self[outer]=geom=self.unique('LinearRing')
+                self[geom] = outer = self.unique('outerBoundaryIs')
+                self[outer] = geom = self.unique('LinearRing')
             return geom
 
     def draw(self,
@@ -244,10 +251,8 @@ class KML(XML):
             folder,
             style,
             geometry='LineString',
-            extrude=False,
-            scale=None,
-            shape=None,
-            tesselate=None,
+            extrude=False, # connect geometry to ground
+            tesselate=None, # follow terrain
             altitude='absolute'):
 
         '''
@@ -293,9 +298,7 @@ class KML(XML):
                     folder,
                     point,
                     geometry=geometry,
-                    scale=scale,
                     style=style,
-                    shape=shape,
                     extrude=extrude,
                     tesselate=tesselate,
                     altitude=altitude)

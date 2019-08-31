@@ -27,8 +27,6 @@ class KML_Folder(Unindexed):
         self.kml.draw(data,
             folder=self.folders[node],
             style=self.styles[self.tree[node, 'styleUrl']],
-            scale=self.tree[node, 'scale'],
-            shape=self.tree[node, 'dae'],
             tesselate=self.tree[node, 'tesselate'],
             geometry=self.tree[node, 'geometry'],
             extrude=self.tree[node, 'extrude'],
