@@ -10,10 +10,17 @@ class To_KML():
     def make_listmode(u=None):
         return 'check' if u is None else u
 
+    def make_integer(i=None):
+        try:
+            return int(i)
+        except (ValueError, TypeError) as e:
+            return None
+
     listmode = cast(make_listmode)
     uid = cast(To.string, 'unknown')
     id = cast(To.string, '')
     fraction = cast(To.fraction, 1)
+    sloppyint = cast(make_integer)
 
 class KML(XML):
     '''
@@ -43,6 +50,8 @@ class KML(XML):
         'id':To.string, # label, non-unique
         'pid':To_KML.uid, # polygonal grouping id
         'tick':To.integer, # UNIX time
+        'begin':To_KML.sloppyint, # UNIX time
+        'end':To_KML.sloppyint, # UNIX time
         'lat':To.signed_degree_90,
         'lon':To.signed_degree,
         'alt':To.numeric,
@@ -81,12 +90,12 @@ class KML(XML):
         'list.opacity':To_KML.fraction,
         'list.color': To.string,
         'icon.shape':To.string,
-        'icon.scale':cast(To.integer, 1),
         'icon.red':To_KML.fraction,
         'icon.blue':To_KML.fraction,
         'icon.green':To_KML.fraction,
         'icon.opacity':To_KML.fraction,
         'icon.color': To.string,
+        'icon.scale':cast(To.numeric, 1),
         'model.shape': To.string,
         'model.xscale': cast(To.numeric, 1),
         'model.yscale': cast(To.numeric, 1),
@@ -126,6 +135,10 @@ class KML(XML):
         return style
 
     @staticmethod
+    def timestamped(tick):
+        return unix2str(float(tick), '%Y-%m-%dT%H:%M:%SZ')
+
+    @staticmethod
     def coordinated(record, show_fields=None, altitude_in_feet=True):
         '''
         create a KML coordinate
@@ -133,7 +146,7 @@ class KML(XML):
         coordinate = KML.Coordinate(record)
         if show_fields is not None:
             coordinate['description'] = '\n'.join([i+': '+str(coordinate[i]) for i in show_fields])
-        coordinate['time'] = unix2str(float(coordinate['tick']), '%Y-%m-%dT%H:%M:%SZ')
+        coordinate['time'] = KML.timestamped(coordinate['tick'])
         if altitude_in_feet:
             coordinate['alt'] = KML.feet2meter(coordinate['alt'])
         if not coordinate['point']:
@@ -219,6 +232,12 @@ class KML(XML):
             self[placemark, 'description'] = point['description']
         self[placemark, 'styleUrl'] = style['id']
 
+        if 'begin' in point or 'end' in point:
+            self[placemark] = timespan = self.unique('TimeSpan')
+            for bound in ['begin', 'end']:
+                if bound in point and point[bound] is not None:
+                    self[timespan, bound] = KML.timestamped(point[bound])
+
         if geometry == 'Model':
             self[placemark] = track = placemark + '/gx:Track'
             self[track].set('id', point['id'])
@@ -252,6 +271,7 @@ class KML(XML):
             style,
             geometry='LineString',
             extrude=False, # connect geometry to ground
+            visibility=True, # show on startup
             tesselate=None, # follow terrain
             altitude='absolute'):
 
@@ -269,6 +289,9 @@ class KML(XML):
         - lon
         - alt (in feet)
         - tick (UNIX time)
+
+        Points will be plotted in the order they are occur in the stream
+        Meta data (e.g. id) will only be taken from the first point in the stream
         '''
 
         def complete(element, coords, ticks):
@@ -284,6 +307,7 @@ class KML(XML):
             else:
                 self[element, 'coordinates'] = KML.SPACER + KML.SPACER.join(coords) # all in one element
 
+        self[folder, 'visibility'] = visibility
         last = coords = ticks = None
         for p in points:
             point = KML.coordinated(p, show_fields=style['show.fields'])

@@ -18,6 +18,7 @@ class KML_Folder(Unindexed):
         self.tree[base, 'altmode'] = 'absolute'
         self.tree[base, 'extrude'] = False
         self.tree[base, 'tesselate'] = False
+        self.tree[base, 'visibility'] = True
         self.filename = filename
 
     def stylize(self, values):
@@ -29,6 +30,7 @@ class KML_Folder(Unindexed):
             style=self.styles[self.tree[node, 'styleUrl']],
             tesselate=self.tree[node, 'tesselate'],
             geometry=self.tree[node, 'geometry'],
+            visibility=self.tree[node, 'visibility'],
             extrude=self.tree[node, 'extrude'],
             altitude=self.tree[node, 'altmode'])
 
