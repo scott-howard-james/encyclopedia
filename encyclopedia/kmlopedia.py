@@ -62,7 +62,8 @@ class KML(XML):
 
     Style = Record({
         'id':str,
-        'show.fields':list,
+        'show.fields':list, # show these fields in description. TODO: change this name to show.description
+        'show.data':list, # show these fields in extended data
         'label.red':To_KML.fraction,
         'label.blue':To_KML.fraction,
         'label.green':To_KML.fraction,
@@ -139,13 +140,15 @@ class KML(XML):
         return unix2str(float(tick), '%Y-%m-%dT%H:%M:%SZ')
 
     @staticmethod
-    def coordinated(record, show_fields=None, altitude_in_feet=True):
+    def coordinated(record, show_description=None, show_data=None, altitude_in_feet=True):
         '''
         create a KML coordinate
         '''
         coordinate = KML.Coordinate(record)
-        if show_fields is not None:
-            coordinate['description'] = '\n'.join([i+': '+str(coordinate[i]) for i in show_fields])
+        if show_description is not None:
+            coordinate['description'] = '\n'.join([i+': '+str(coordinate[i]) for i in show_description])
+        if show_data is not None:
+            coordinate['data'] = [(i, str(coordinate[i])) for i in show_data]
         coordinate['time'] = KML.timestamped(coordinate['tick'])
         if altitude_in_feet:
             coordinate['alt'] = KML.feet2meter(coordinate['alt'])
@@ -228,8 +231,15 @@ class KML(XML):
         self[folder] = placemark = self.unique('Placemark')
         self[placemark, 'name'] = point['id']
 
-        if 'description' in point:
+        if 'data' in point and point['data']:
+            self[placemark] = ed = self.unique('ExtendedData')
+            for field, value in point['data']:
+                self[ed] = edt = self.unique('Data')
+                self[edt].attrib['name'] = field
+                self[edt, 'value'] =value
+        elif 'description' in point and point['description']:
             self[placemark, 'description'] = point['description']
+
         self[placemark, 'styleUrl'] = style['id']
 
         if 'begin' in point or 'end' in point:
@@ -292,6 +302,13 @@ class KML(XML):
 
         Points will be plotted in the order they are occur in the stream
         Meta data (e.g. id) will only be taken from the first point in the stream
+
+        if begin/end appears as fields:
+
+        - begin (UNIX time)
+        - end (UNIX time)
+
+        will create a time block.  As with meta data, only the data on the first uid appearance is used
         '''
 
         def complete(element, coords, ticks):
@@ -310,7 +327,9 @@ class KML(XML):
         self[folder, 'visibility'] = visibility
         last = coords = ticks = None
         for p in points:
-            point = KML.coordinated(p, show_fields=style['show.fields'])
+            point = KML.coordinated(p,
+                show_description=style['show.fields'],
+                show_data=style['show.data'])
             if point['uid'] == last:
                 coords.append(point['point'])
                 ticks.append(point['time'])
