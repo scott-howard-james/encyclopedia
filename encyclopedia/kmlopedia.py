@@ -49,7 +49,7 @@ class KML(XML):
         'uid':To_KML.uid, # track id, unique
         'id':To.string, # label, non-unique
         'pid':To_KML.uid, # polygonal grouping id
-        'tick':To.integer, # UNIX time
+        'tick':To.numeric, # UNIX time
         'begin':To_KML.sloppyint, # UNIX time
         'end':To_KML.sloppyint, # UNIX time
         'lat':To.signed_degree_90,
@@ -137,7 +137,7 @@ class KML(XML):
 
     @staticmethod
     def timestamped(tick):
-        return unix2str(float(tick), '%Y-%m-%dT%H:%M:%SZ')
+        return unix2str(float(tick), '%Y-%m-%dT%H:%M:%S.%fZ')
 
     @staticmethod
     def coordinated(record, show_description=None, show_data=None, altitude_in_feet=True):
