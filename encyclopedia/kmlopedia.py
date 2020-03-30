@@ -213,6 +213,7 @@ class KML(XML):
     def _draw(self,
                 folder,
                 point, # single point
+                visibility,
                 geometry,
                 extrude,
                 style,
@@ -230,6 +231,7 @@ class KML(XML):
 
         self[folder] = placemark = self.unique('Placemark')
         self[placemark, 'name'] = point['id']
+        self[placemark, 'visibility'] = visibility
 
         if 'data' in point and point['data']:
             self[placemark] = ed = self.unique('ExtendedData')
@@ -324,7 +326,6 @@ class KML(XML):
             else:
                 self[element, 'coordinates'] = KML.SPACER + KML.SPACER.join(coords) # all in one element
 
-        self[folder, 'visibility'] = visibility
         last = coords = ticks = None
         for p in points:
             point = KML.coordinated(p,
@@ -340,6 +341,7 @@ class KML(XML):
                 drawn = self._draw(
                     folder,
                     point,
+                    visibility=visibility,
                     geometry=geometry,
                     style=style,
                     extrude=extrude,
