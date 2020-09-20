@@ -3,13 +3,14 @@ An Encyclopedia is an abstract container intended for smallish data sets which p
 the benefits of a relational (and non-relational) database but with lower syntactic friction
 '''
 
-__version__ = '0.41'
+__version__ = '0.42'
 
 # expose the primary concrete and abstract classes
 
 from .templates import Unindexed, Indexed, Unity, Signed, Zero
 from .dictionary import Dictionary
 from .relate import Relation, Isomorphism, Function, Partition
+from .eav import EAV
 from .forest import Forest
 from .record import Record
 from .arboretum import Arboretum

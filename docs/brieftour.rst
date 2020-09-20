@@ -21,19 +21,18 @@ An **Encyclopedia** is a
 class supporting the following additional features:
 
 set operations
-    Encyclopedias may be created and combined using standard arithmetic
-    operators
+   Encyclopedias may be created and combined using standard arithmetic
+   operators
 functional composition
-    Encyclopedia contents may be modified in their entirety by
-    functions, as well as other Encyclopedias
+   Encyclopedia contents may be modified in their entirety by functions,
+   as well as other Encyclopedias
 
 and the following optional features:
 
 multi-valued assignments
-    keys may be *assigned* single values or *tagged* with multiple
-    values
+   keys may be *assigned* single values or *tagged* with multiple values
 inversion
-    Encyclopedias may swap their key-value pairs
+   Encyclopedias may swap their key-value pairs
 
 Say that Differently
 --------------------
@@ -64,7 +63,7 @@ unlimited computational elements in The Cloud. We have various
 topologies to help access and store our data including: tabular
 (e.g. HDF5), relational (e.g. SQL) and non-relational (e.g. NoSQL). We
 have data-analyst-friendly languages (e.g. python, R) with increasingly
-sophisticated libraries (e.g. `SciPy <https://www.scipy.org>`__,
+sophisticated libraries (e.g. `SciPy <https://www.scipy.org>`__,
 `tidyverse <https://www.tidyverse.org>`__) to make it all fit together.
 
 On the more modest end of the data deluge resides the localized data:
@@ -101,13 +100,13 @@ supports all four
 `cardinalities <https://en.wikipedia.org/wiki/Cardinality_(data_modeling)>`__:
 
 M:1 (many-to-one)
-    a function or dictionary
+   a function or dictionary
 1:1 (one-to-one)
-    an isomorphism or unique alias
+   an isomorphism or unique alias
 1:M (one-to-many)
-    a partition
+   a partition
 M:M (many-to-many)
-    a general relation
+   a general relation
 
 A Relation instance is restricted to one of the cardinalities upon
 object instantiation. Relations are invertible  [1]_, providing direct
@@ -148,55 +147,55 @@ expressed as:
 
 ::
 
-        {R[f(x)]:f(R[x]) for x in R}
+       {R[f(x)]:f(R[x]) for x in R}
 
 A relational composition as:
 
 ::
 
-        {R1[x]:R1[R2[x]) for x in R2}
+       {R1[x]:R1[R2[x]) for x in R2}
 
 And an inversion as:
 
 ::
 
-        {R[x]:x for x in R}
+       {R[x]:x for x in R}
 
 As an example of the use of a relation, suppose we need to map
 qualitative weather conditions to dates:
 
 ::
 
-        weather = Relation()
-        weather['2011-7-23']='high-wind'
-        weather['2011-7-24']='low-rain'
-        weather['2011-7-25']='low-rain'
-        weather['2011-7-25']='low-wind'
+       weather = Relation()
+       weather['2011-7-23']='high-wind'
+       weather['2011-7-24']='low-rain'
+       weather['2011-7-25']='low-rain'
+       weather['2011-7-25']='low-wind'
 
 Note that in the last statement the assignment operator performs an
 append not an overwrite. So:
 
 ::
 
-        weather['2014-7-25']
+       weather['2014-7-25']
 
 produces a *set* of values:
 
 ::
 
-         {'low-rain','low-wind'}
+        {'low-rain','low-wind'}
 
 Relation also provides an inverse:
 
 ::
 
-        (~weather)['low-rain']
+       (~weather)['low-rain']
 
 also producing a set of values:
 
 ::
 
-        {'2014-7-25','2014-7-24'}
+       {'2014-7-25','2014-7-24'}
 
 See the `paper from SciPy
 2015 <https://github.com/scott-howard-james/relate/wiki/Rationale>`__
@@ -208,11 +207,6 @@ Forest
 `Forests <https://en.wikipedia.org/wiki/Tree_(graph_theory)>`__ are
 Unindexed Encyclopedias formed from collections of
 `trees <https://en.wikipedia.org/wiki/Tree_(graph_theory)>`__.
-
-.. figure:: https://qph.ec.quoracdn.net/main-qimg-708af2ed024c2fb8aa37cbac013573d7
-   :alt: Forest
-
-   Forest
 
 Syntactically a tree, in our parlance, will grow “upwards”; thus the
 greater heights of a tree will be closer to the “leaves”. Each *node* in
@@ -226,7 +220,7 @@ Sub-branches of Forests are obtained through the bracket “get” notation:
 
 ::
 
-        F[x]
+       F[x]
 
 Note that the *keys* used in this bracket notation are different than
 *nodes*. In particular, *nodes* within a Forest are unique; however,
@@ -240,7 +234,7 @@ by a single key, specifically:
 
 ::
 
-        F[x] = y
+       F[x] = y
 
 means: create a new node, keyed by *y*, *for every* node that is keyed
 by *x*.
@@ -252,7 +246,7 @@ another context, namely when *y* is another forest:
 
 ::
 
-        F1[x] = F2
+       F1[x] = F2
 
 grafts the F2 Forest to *all* occurrences of *x* within F1. An example
 of a related operation is a YAML alias. This grafting can also be
@@ -260,7 +254,7 @@ performed using composition notation:
 
 ::
 
-        F1 * F2
+       F1 * F2
 
 which means: create a new Forest such when F1 and F2 share a key *x*,
 the branches of F2[x] are grafted onto F1 at *x*. An example of a
@@ -312,7 +306,7 @@ bracket assignment, namely:
 
 ::
 
-        F[x, attribute] = value
+       F[x, attribute] = value
 
 This assigns the key-value pair *(attribute, value)* directly to *x* as
 well as implicitly to the nodes above *x*. Retrieving attributes is
@@ -320,7 +314,7 @@ dynamic:
 
 ::
 
-        F[x, attribute]
+       F[x, attribute]
 
 meaning, the tree is searched for an attribute starting at the node and
 descending down the tree until a parent is found with the assignment. As
@@ -328,28 +322,28 @@ a motivating example, suppose we had a hierarchical document:
 
 ::
 
-        F['Document'] = 'Section 1'
-        F['Section 1'] = 'Section 1.1'
+       F['Document'] = 'Section 1'
+       F['Section 1'] = 'Section 1.1'
 
 Assigning the font
 
 ::
 
-        F['Section 1', 'font'] = 'Helvetica'
+       F['Section 1', 'font'] = 'Helvetica'
 
 will affect *Section 1* and *Section 1.1* but will not affect the
 overall document. A new section created at the *Document* level
 
 ::
 
-        F['Document'] = 'Section 2'
+       F['Document'] = 'Section 2'
 
 will be unaffected by the font assignment but further subsections below
 *Section 1.1*
 
 ::
 
-        F['Section 1.1'] = 'Section 1.1.1'
+       F['Section 1.1'] = 'Section 1.1.1'
 
 will have their default font set.
 
@@ -363,14 +357,14 @@ composition. As an example of the composition feature, if:
 
 ::
 
-        fruit = Dictionary({'apple':'red', 'blueberry':'blue'})
-        colors = Dictionary({'red':'FF0000', 'blue':'0000FF', 'green':'00FF00'})
+       fruit = Dictionary({'apple':'red', 'blueberry':'blue'})
+       colors = Dictionary({'red':'FF0000', 'blue':'0000FF', 'green':'00FF00'})
 
 then
 
 ::
 
-        fruit * colors == Dictionary({'apple': 'FF0000', 'blueberry': '0000FF'})
+       fruit * colors == Dictionary({'apple': 'FF0000', 'blueberry': '0000FF'})
 
 Record
 ------
@@ -387,20 +381,20 @@ characteristics:
 
 ::
 
-        from encyclopedia import Record
-        characteristics = Record({
-            'name':str,
-            'age':int})
+       from encyclopedia import Record
+       characteristics = Record({
+           'name':str,
+           'age':int})
 
 To create the individual Dictionaries we use the ``Record.instance``
 function:
 
 ::
 
-        Dog = characteristics.instance # make it more class-like    
-        fido = Dog()
-        fido['age']='2'
-        assert fido['age']==2
+       Dog = characteristics.instance # make it more class-like
+       fido = Dog()
+       fido['age']='2'
+       assert fido['age']==2
 
 Note that the ``age`` was converted to an integer by the *function*
 ``int``. We can put in any functions we like into the Record defintion
@@ -408,23 +402,23 @@ and even auto-populate:
 
 ::
 
-        def no_name(x=None): 
-            return 'UNKNOWN' if x is None else str(x)
+       def no_name(x=None):
+           return 'UNKNOWN' if x is None else str(x)
 
-        Named = Record({
-            'name':no_name,
-            'age':int},
-            autopopulate=True).instance
+       Named = Record({
+           'name':no_name,
+           'age':int},
+           autopopulate=True).instance
 
-        someone = Named()
-        assert someone['name']=='UNKNOWN'
+       someone = Named()
+       assert someone['name']=='UNKNOWN'
 
 Note also that Record will complain (with a friendly Exception) is one
 were to attempt to set keys other than provided in the factory:
 
 ::
 
-        someone['address'] # not valid
+       someone['address'] # not valid
 
 Encyclopedia Operations
 =======================
@@ -440,8 +434,8 @@ Encyclopedia:
 +-----------------------------------+-----------------------------------+
 | del E[x]                          | remove *x* from domain of *E* …   |
 |                                   | also known as                     |
-|                                   | `burglary <https://www.youtube.co |
-|                                   | m/watch?v=R9n11xtjZ3Y>`__.        |
+|                                   | `burglary <https://www.you        |
+|                                   | tube.com/watch?v=R9n11xtjZ3Y>`__. |
 |                                   | Yep, that was your obligatory     |
 |                                   | Monty Python reference            |
 +-----------------------------------+-----------------------------------+
@@ -475,14 +469,14 @@ that, assignment:
 
 ::
 
-        E[x] = y
+       E[x] = y
 
 may not *overwrite* the key’s value, but instead *append* to the key
 value or *tag* the key. Similarly, retrieval:
 
 ::
 
-        E[x]
+       E[x]
 
 may produce a set (or list) of values corresponding to the key.
 
@@ -491,26 +485,26 @@ commutative:
 
 ::
 
-        E1+E2 == E2+E1
+       E1+E2 == E2+E1
 
 and associative:
 
 ::
 
-        E1+(E2+E3) == (E1+E2)+E3
+       E1+(E2+E3) == (E1+E2)+E3
 
 due to the nature of element-wise set operations. Composition, however,
 is *not* necessarily commutative:
 
 ::
 
-        E1*E2 ?= E2*E1
+       E1*E2 ?= E2*E1
 
 but it is distributive [4]_:
 
 ::
 
-        E1*(E1+E3) == E1*(E2+E2)
+       E1*(E1+E3) == E1*(E2+E2)
 
 as functions act element-wise on the keys.
 
@@ -522,7 +516,7 @@ signed Encyclopedia:
 
 ::
 
-        -E
+       -E
 
 Note that we specifically refer to the
 `unary <https://docs.python.org/3/reference/expressions.html>`__
@@ -561,21 +555,21 @@ in ``E2``:
 
 ::
 
-        E1&E2 == E1-(E1-E2)
+       E1&E2 == E1-(E1-E2)
 
 For a Signed Encyclopedia however, this won’t work as ``-E1`` is another
 Encyclopedia:
 
 ::
 
-        E1-(E1-E2) == E1-E1+E2 == E2
+       E1-(E1-E2) == E1-E1+E2 == E2
 
 Instead we must use the Signed Encyclopedia’s *abs* operator to remove
 the negative elements first:
 
 ::
 
-        E1&E2 == E1-abs(E1-E2)
+       E1&E2 == E1-abs(E1-E2)
 
 Indexed Encyclopedia
 --------------------
@@ -584,20 +578,20 @@ When a multiplicative inverse:
 
 ::
 
-        ~E
+       ~E
 
 is available, the Encyclopedia is a
 `field <https://en.wikipedia.org/wiki/Field_(mathematics)>`__ where:
 
 ::
 
-        ~E*E == ~E*E == Identity
+       ~E*E == ~E*E == Identity
 
 that is,
 
 ::
 
-        (~E*E)[x]==x
+       (~E*E)[x]==x
 
 Finally, an *Indexed* Encyclopedia supports inversion, including the
 following operators and identities:

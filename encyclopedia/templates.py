@@ -12,7 +12,6 @@ class Unindexed(MutableMapping):
     - **composition**: Encyclopedia contents may be altered by functions or Encyclopedias
     - **set operation**: Encyclopedias may be combined using union, difference and intersection
     - **mutability**: ability to "freeze" and "melt" an object
-
     '''
 
     @abstractmethod

@@ -95,7 +95,7 @@ setup(
         #'Programming Language :: Python :: 2',
         #'Programming Language :: Python :: 2.7',
         #'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
+        #'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
@@ -126,7 +126,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=['nits'],
 
-    python_requires='>=3.4',
+    python_requires='>=3.5',
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:

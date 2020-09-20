@@ -34,6 +34,14 @@ Dictionary
     :members:
     :show-inheritance:
 
+EAV
+-----------
+
+.. autoclass:: encyclopedia.EAV
+    :show-inheritance:
+    :members:
+    :special-members:
+
 Record
 -----------
 

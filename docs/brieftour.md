@@ -116,8 +116,6 @@ See the [paper from SciPy 2015](https://github.com/scott-howard-james/relate/wik
 
 [Forests](https://en.wikipedia.org/wiki/Tree_(graph_theory)) are Unindexed Encyclopedias formed from collections of [ trees](https://en.wikipedia.org/wiki/Tree_(graph_theory)).
 
-![Forest](https://qph.ec.quoracdn.net/main-qimg-708af2ed024c2fb8aa37cbac013573d7)
-
  Syntactically a tree, in our parlance, will grow "upwards"; thus the greater heights of a tree will be closer to the "leaves".  Each *node* in a tree connects upwards to a collection of distinct nodes; conversely each node has at most a single, directly-connecting lower node.  Forests may be combined with other Forests using set operations (*horizontal combination*), and be grown on top of other Forests using composition (*vertical combination*).
 
 Sub-branches of Forests are obtained through the bracket "get" notation:
@@ -212,14 +210,14 @@ As an example, we can define a factory for recording personal characteristics:
 
 To create the individual Dictionaries we use the `Record.instance` function:
 
-		Dog = characteristics.instance # make it more class-like	
+		Dog = characteristics.instance # make it more class-like
 		fido = Dog()
 		fido['age']='2'
 		assert fido['age']==2
 
 Note that the `age` was converted to an integer by the *function* `int`.  We can put in any functions we like into the Record defintion and even auto-populate:
 
-		def no_name(x=None): 
+		def no_name(x=None):
 			return 'UNKNOWN' if x is None else str(x)
 
 		Named = Record({

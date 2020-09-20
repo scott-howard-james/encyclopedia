@@ -3,6 +3,7 @@ import unittest
 # import the unittests ...
 from encyclopedia.templates import Test_Encyclopedia
 from encyclopedia.dictionary import Test_Dictionary
+from encyclopedia.eav import Test_EAV
 from encyclopedia.record import Test_Record
 from encyclopedia.forest import Test_Forest
 from encyclopedia.relate import Test_Relation
