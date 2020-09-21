@@ -1,2 +1,2 @@
-encyclopedia==0.33
-nits==0.12
+encyclopedia==0.42
+nits==0.17
