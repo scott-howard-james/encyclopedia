@@ -6,53 +6,63 @@ import typing
 from nits.file import CSV
 from encyclopedia import Unindexed
 
-# utilities
-
-def islist(thing):
-    '''
-    Open to other ideas here.
-    Note that being a string is *not* the only other option for thing
-    ToDo: move this to nits
-    '''
-    return isinstance(thing, (list, tuple))
-
-def listed(thing):
-    return thing if islist(thing) else [thing]
 
 class EAV(dict, Unindexed):
     '''
     Container for storing small-ish EAV "triples" (Entity-Atrribute-Value).
-    Intent of class is to provide dictionary-like access rather than large-scale data analysis functionality.
-    Internally, EAV is stored as a dictionary (key:E) of dictionaries (key:A,value:V)
+    - Focus of class is providing convenient dictionary-like access rather than data analysis functionality
+    - Internally, EAV is stored as a dictionary (key:E) of dictionaries (key:A,value:V)
+    - supports encyclopedic operations e.g. subtraction (difference) and addition (union)
+
+    Example set-ting:
+
+        eav[entity, attribute] = value
+        eav[[entity1, entity2,], attribute] = value
+        eav[[entiity1, entity2,], attribute] = [value1, value2,] # len(entities) must equal len(values)
+        eav[:, attribute] = value #  assign all entities same value for attribute
+
+    Unsupported at this time:
+
+        eav[entity, :] = value # ERROR
+        eav[entity, [attribute1, attribute2,]] = [value1, value2,] # ERROR
+
+    Example get-ting:
+
+        eav[entity, attribute] # value for a specific attribute
+        eav[:, attribute] # new EAV with all entities and but only one attribute
+        eav[:, [attribute1, attribute2]] # new EAV with all entities and but only specified attributes
+        eav[entity,:] #  new EAV with only one entity
+        eav[[entity1, entity2],:] #  new EAV with only specified entities
+
+    ToDo:
+    - Implement with Relation to allow inversion(?)
     '''
-    EAV = ENTITY, ATTRIBUTE, VALUE = 'entity', 'attribute', 'value'
 
     def __init__(self, data=None,
-        fmt: str = None, # forced input formatter (necessary for some formats)
-        vcast=str, # default value cast
-        acast=str, # attribute cast
-        ecast=str, # entity cast
-        defaults=None, # defaults when attribute not found
-        vcasts=None): # specific casts (by attribute)
+        fmt: str = None, # forced input formatter (necessary for some formats),
+        fields = ('entity', 'attribute', 'value'), # when reading dictionary
+        vcast=None, # value cast, e.g. integer
+        acast=str, # attribute cast, for instance, a string
+        ecast=str, # entity cast, for instance, a string
+        defaults=None, # default values when an attribute is not found for an entity
+        vcasts=None): # per-attribute casts
         '''
         - fmt (one of the following ...)
             - dict: dictionary of dictionaries (auto-detected)
-            - file: CSV of triples  (auto-dected)
-            - triple: list of EAV dictionaries  (defaulted)
-            - column: list of entity-rows with field names as first element (must force this option)
-        - vcast: default value cast
+            - triple: list of EAV dictionaries/tuples  (defaulted)
+            - column: list of records with field names as first row and entities on first column (must force this option)
+        - vcast: value cast
         - acast: attribute cast
         - ecast: entity cast
         - defaults: dictionary of defaults for specific attributes
         - vcasts: dictionary of casting for specific attributes
-
         '''
+
+        self.fields = ENTITY, ATTRIBUTE, VALUE = fields
 
         if fmt is None:
             if data is None:
                 fmt = 'triple' # although doesn't matter
-            elif isinstance(data, str):
-                fmt = 'file'
             elif isinstance(data, dict):
                 fmt = 'dict'
             elif isinstance(data, typing.Iterable):
@@ -77,10 +87,6 @@ class EAV(dict, Unindexed):
         Unindexed.__init__(self)
         dict.__init__(self)
         if data is not None:
-            if fmt == 'file' :
-                fmt = 'triple'
-                data = CSV.read(data)
-
             get = iter(data)
             if fmt == 'dict' :
                 d = data
@@ -98,13 +104,21 @@ class EAV(dict, Unindexed):
             elif fmt == 'triple':
                 for d in data:
                     if isinstance(d, dict):
-                        e, a, v = d[EAV.ENTITY], d[EAV.ATTRIBUTE], d[EAV.VALUE]
+                        e, a, v = d[ENTITY], d[ATTRIBUTE], d[VALUE]
                     else:
                         e, a, v = d
                     self[e, a] = v
             else:
                 print(fmt + ' not supported')
                 assert False
+
+    @staticmethod
+    def is_list(thing):
+        return isinstance(thing, (list, tuple))
+
+    @staticmethod
+    def to_list(thing):
+        return thing if EAV.is_list(thing) else [thing]
 
     def _new_entity(self, entity):
         return dict.__setitem__(self, entity, {})
@@ -125,10 +139,10 @@ class EAV(dict, Unindexed):
         else:
             yield from attributes
 
-    def compose(self, other, field='value', entities=None):
-        new = self.copy_style()
+    def compose(self, other, entities=None):
 
         if isinstance(other, EAV):
+            new = self.copy_style()
             new.defaults.update(other.defaults)
             new.vcasts.update(other.vcasts)
             for entity in self._check_entities(entities):
@@ -141,8 +155,9 @@ class EAV(dict, Unindexed):
                         new[entity, attribute] = value
 
         elif callable(other):
+            new = []
             for entity in self._check_entities(entities):
-                new[entity, field] = other(self[entity])
+                new.append(other(self[entity]))
         else:
             assert False
         return new
@@ -184,16 +199,6 @@ class EAV(dict, Unindexed):
         return new
 
     def __getitem__(self, thing):
-        '''
-        Usage:
-
-                eav[entity, attribute]
-
-        Notes:
-
-        - eav[:, attribute]: new EAV with all entities and but only attribute(s) specified
-        - eav[entity,:]:  new EAV with only entity (ies) specified
-        '''
 
         def _get(attributes=None, entities=None):
             new = self.copy_style()
@@ -212,11 +217,11 @@ class EAV(dict, Unindexed):
             if isinstance(e, slice) and isinstance(a, slice):
                 return self.copy()
             elif isinstance(e, slice):
-                return _get(attributes=listed(a))
+                return _get(attributes=EAV.to_list(a))
             elif isinstance(a, slice):
-                return _get(entities=listed(e))
-            elif islist(a) or islist(e):
-                return _get(entities=listed(e), attributes=listed(a))
+                return _get(entities=EAV.to_list(e))
+            elif EAV.is_list(a) or EAV.is_list(e):
+                return _get(entities=EAV.to_list(e), attributes=EAV.to_list(a))
             else:
                 assert e in self
                 if a in self[e]:
@@ -229,50 +234,44 @@ class EAV(dict, Unindexed):
             return dict.__getitem__(self, thing)
 
     def __setitem__(self, thing, value):
-        '''
-        Usage:
-
-                eav[entity, attribute] = value
-
-        Notes:
-
-        - eav[:, attribute] = value: assigns all entities a new attribute with a fixed value
-        '''
 
         def _set(entity, attribute, value):
             e, a = self.ecast(entity), self.acast(attribute)
             if a in self.vcasts:
                 v = self.vcasts[a](value)
-            else:
+            elif self.vcast is not None:
                 v = self.vcast(value)
+            else:
+                v = value
             if e not in self:
                 self._new_entity(e)
             self[e][a] = v
 
         if isinstance(thing, tuple):
             e, a = thing
-            if isinstance(a, slice):
-                assert False
-            elif isinstance(e, slice):
+            if isinstance(e, slice):
                 assert e.start == e.stop == None
-                for entity in self:
-                    for attribute in listed(a):
+                e = list(self)
+            if isinstance(a, slice):
+                assert False # not yet supported
+            es = EAV.to_list(e)
+
+            if EAV.is_list(value) and not EAV.is_list(a):
+                assert len(value) == len(es)
+                for i, v in enumerate(value):
+                    _set(es[i], a, v)
+            elif not EAV.is_list(value):
+                for entity in es:
+                    for attribute in EAV.to_list(a):
                         _set(entity, attribute, value)
             else:
-                for entity in listed(e):
-                    for attribute in listed(a):
-                        _set(entity, attribute, value)
+                assert False # combination not yet supported
         else:
             assert isinstance(value, dict) and len(value) > 0
             for k, v in value.items():
                 self[thing, k] = v
 
     def __delitem__(self, thing):
-        '''
-        Use 2-tuple as in:
-
-            del eav[entity, attribute]
-        '''
 
         def remove(attributes=None, entities=None):
             for entity in self._check_entities(entities):
@@ -291,8 +290,8 @@ class EAV(dict, Unindexed):
             elif isinstance(a, slice):
                 assert a.start == a.stop == None
                 remove(entities=e)
-            elif islist(e) or islist(a):
-                remove(attributes=listed(a), entities=listed(e))
+            elif EAV.is_list(e) or EAV.is_list(a):
+                remove(attributes=EAV.to_list(a), entities=EAV.to_list(e))
             else:
                 del self[e][a]
         else:
@@ -300,7 +299,7 @@ class EAV(dict, Unindexed):
 
     def attributes(self, entities=None):
         '''
-        Computationally determine which attributes are used
+        Computationally determine which attributes are used for certain entities
         '''
         result = []
         for entity in self._check_entities(entities):
@@ -310,6 +309,9 @@ class EAV(dict, Unindexed):
         return result
 
     def rename(self, renames, entities=None):
+        '''
+        rename attributes (not the entities)
+        '''
         new = self.copy()
         for entity in new._check_entities(entities):
             for k, v in renames.items():
@@ -327,27 +329,31 @@ class EAV(dict, Unindexed):
             for k1, v1 in v0.items():
                 yield k0, k1, v1
 
-    def table_str(self, attributes=None, entities=None):
-        atts = list(self._check_attributes(attributes, entities))
-        def image(e, a):
-            return '' if self[e, a] is None else str(self[e, a])
-        def row():
-            yield '\t'.join(['entity', *atts])
-            for entity in self._check_entities(entities):
-                yield '\t'.join([entity] + [image(entity, a) for a in atts])
+    def value_str(self, e, a):
+        return '' if self[e, a] is None else str(self[e, a])
+
+    def string(self, sep=',', by_entity=False, attributes=None, entities=None):
+        ents = list(self._check_entities(entities))
+        atts = list(self._check_attributes(attributes, ents))
+
+        def row_by_entity():
+            yield sep.join(['', *atts])
+            for e in ents:
+                yield sep.join([str(e)] + [self.value_str(e, a) for a in atts])
+
+        def row_by_attribute():
+            yield sep.join(['', *ents])
+            for a in atts:
+                yield sep.join([str(a)] + [self.value_str(e, a) for e in ents])
+
+        row = row_by_entity if by_entity else row_by_attribute
         return '\n'.join(list(row()))
 
-    def labeled_str(self, entities=None):
-        def row():
-            for entity in self._check_entities(entities):
-                yield entity + ': ' + ' '.join([str(k1) + '(' + str(v1) + ')' for k1, v1 in self[entity].items()])
-        return '\n'.join(row())
-
     def __str__(self):
-        return self.table_str()
+        return self.string()
 
     def write(self, filename):
-        CSV.write(self.triples(), filename, fields=EAV.EAV)
+        CSV.write(self.triples(), filename, fields=self.fields)
 
 class Test_EAV(unittest.TestCase):
 
@@ -367,7 +373,7 @@ class Test_EAV(unittest.TestCase):
         with tempfile.NamedTemporaryFile() as file:
             file.close()
             t1.write(file.name)
-            t2 = EAV(file.name,
+            t2 = EAV(CSV.read(file.name),
                 vcasts=self.vcasts,
                 vcast=int)
         assert t1 == t2
@@ -387,6 +393,13 @@ class Test_EAV(unittest.TestCase):
         t3 = (t1 * t2)[:, ['r', 'g', 'b', 'alpha']]
         assert t3['a', 'alpha'] == .5
         assert t3['b', 'alpha'] == .8
+
+    def test_compose_f(self):
+        flintstones = ['Fred', 'Wilma']
+        self.t1[flintstones, 'age'] = [31, 28]
+        def f(e):
+            return int(e['medicines'])*int(e['visits'])*int(e['age'])
+        self.t1[flintstones, 'nonsense'] = f * self.t1[flintstones,:]
 
     def test_assign(self):
         t1 = self.t1
@@ -414,9 +427,7 @@ class Test_EAV(unittest.TestCase):
 
     def test_strings(self):
         t1 = self.t1
-        t1.table_str()
-        t1.labeled_str()
-        t1.table_str(['age'])
+        t1.string(by_entity=True)
 
     def test_get(self):
         t1 = self.t1
