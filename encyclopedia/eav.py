@@ -3,9 +3,7 @@ import unittest
 import tempfile
 import typing
 # external
-from nits.file import CSV
 from encyclopedia import Unindexed
-
 
 class EAV(dict, Unindexed):
     '''
@@ -332,28 +330,31 @@ class EAV(dict, Unindexed):
     def value_str(self, e, a):
         return '' if self[e, a] is None else str(self[e, a])
 
-    def string(self, sep=',', by_entity=False, attributes=None, entities=None):
+    def tabular(self, by_entity=False, attributes=None, entities=None):
         ents = list(self._check_entities(entities))
         atts = list(self._check_attributes(attributes, ents))
 
         def row_by_entity():
-            yield sep.join(['', *atts])
+            yield ['', *atts]
             for e in ents:
-                yield sep.join([str(e)] + [self.value_str(e, a) for a in atts])
+                yield [str(e)] + [self.value_str(e, a) for a in atts]
 
         def row_by_attribute():
-            yield sep.join(['', *ents])
+            yield ['', *ents]
             for a in atts:
-                yield sep.join([str(a)] + [self.value_str(e, a) for e in ents])
+                yield [str(a)] + [self.value_str(e, a) for e in ents]
 
         row = row_by_entity if by_entity else row_by_attribute
-        return '\n'.join(list(row()))
+        yield from row()
+
+    def string(self, sep=',', by_entity=True, attributes=None, entities=None):
+        return '\n'.join([sep.join(row) for row in self.tabular(
+                    by_entity=by_entity,
+                    attributes=attributes,
+                    entities=entities)])
 
     def __str__(self):
         return self.string()
-
-    def write(self, filename):
-        CSV.write(self.triples(), filename, fields=self.fields)
 
 class Test_EAV(unittest.TestCase):
 
@@ -367,18 +368,6 @@ class Test_EAV(unittest.TestCase):
             ('Wilma', -1, -2, 17, 'better', 1),
             (1, 0, 4, 100, 'poor', 1),
             (2, 0, 6, 33, 'poor', 1)], vcast=int, vcasts=self.vcasts, fmt='column')
-
-    def test_io(self):
-        t1 = self.t1
-        with tempfile.NamedTemporaryFile() as file:
-            file.close()
-            t1.write(file.name)
-            t2 = EAV(CSV.read(file.name),
-                vcasts=self.vcasts,
-                vcast=int)
-        assert t1 == t2
-        assert t1['Fred', 'visits'] == 0
-        assert t1['2', 'visits'] == 6
 
     def test_compose(self):
         t1 = EAV({
