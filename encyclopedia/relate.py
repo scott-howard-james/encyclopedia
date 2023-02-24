@@ -1,5 +1,6 @@
 # standard
-from collections import OrderedDict, Mapping, MutableMapping, Iterable
+from collections import OrderedDict
+from collections.abc import Mapping, MutableMapping, Iterable
 import operator
 import types
 import unittest

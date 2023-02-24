@@ -1,2 +1,2 @@
-encyclopedia==0.42
+encyclopedia==0.44
 nits==0.17

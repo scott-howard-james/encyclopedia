@@ -1,6 +1,6 @@
 # standard
 from abc import abstractmethod
-from collections import MutableMapping
+from collections.abc import MutableMapping
 from functools import wraps
 import copy
 import unittest

@@ -2,7 +2,7 @@
 import unittest
 import types
 import sys
-from collections import Mapping
+from collections.abc import Mapping
 # external
 # internal
 from encyclopedia.dictionary import Dictionary

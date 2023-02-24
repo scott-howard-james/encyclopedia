@@ -1,57 +1,57 @@
 # standard
 import unittest
-import tempfile
 import typing
 # external
 from encyclopedia import Unindexed
 
 class EAV(dict, Unindexed):
     '''
-    Container for storing small-ish EAV "triples" (Entity-Atrribute-Value).
-    - Focus of class is providing convenient dictionary-like access rather than data analysis functionality
-    - Internally, EAV is stored as a dictionary (key:E) of dictionaries (key:A,value:V)
-    - supports encyclopedic operations e.g. subtraction (difference) and addition (union)
+    Container for storing smallish EAV "triples" (Entity-Attribute-Value).
+    - intent of class is to provide dictionary-like access rather than data analysis functionality
+    - internally, EAV is stored as a dictionary (key:E) of dictionaries (key:A,value:V)
+    - class supports encyclopedic operations e.g. subtraction (difference) and addition (union)
 
-    Example set-ting:
+    set-ting:
 
         eav[entity, attribute] = value
-        eav[[entity1, entity2,], attribute] = value
-        eav[[entiity1, entity2,], attribute] = [value1, value2,] # len(entities) must equal len(values)
+        eav[[entity1, ...], attribute] = value
+        eav[[entity1, ...], attribute] = [value1, ...] # len(entities) must equal len(values)
         eav[:, attribute] = value #  assign all entities same value for attribute
+
+    get-ting:
+
+        eav[entity, attribute] # value for a specific attribute
+        eav[entity] #  dictionary of elements referenced by entity
+
+    get-ting producing new EAV:
+
+        eav[:, attribute] # new EAV with all entities and but only one attribute
+        eav[:, [attribute1, attribute2]] # new EAV with all entities and but only specified attributes
+        eav[entity,:] #  new EAV with only one entity
+        eav[[entity1, ...],:] #  new EAV with only specified entities
 
     Unsupported at this time:
 
         eav[entity, :] = value # ERROR
-        eav[entity, [attribute1, attribute2,]] = [value1, value2,] # ERROR
-
-    Example get-ting:
-
-        eav[entity, attribute] # value for a specific attribute
-        eav[:, attribute] # new EAV with all entities and but only one attribute
-        eav[:, [attribute1, attribute2]] # new EAV with all entities and but only specified attributes
-        eav[entity,:] #  new EAV with only one entity
-        eav[[entity1, entity2],:] #  new EAV with only specified entities
-
-    ToDo:
-    - Implement with Relation to allow inversion(?)
+        eav[entity, [attribute1, ...]] = [value1, ...] # ERROR
     '''
 
     def __init__(self, data=None,
-        fmt: str = None, # forced input formatter (necessary for some formats),
-        fields = ('entity', 'attribute', 'value'), # when reading dictionary
-        vcast=None, # value cast, e.g. integer
-        acast=str, # attribute cast, for instance, a string
-        ecast=str, # entity cast, for instance, a string
-        defaults=None, # default values when an attribute is not found for an entity
-        vcasts=None): # per-attribute casts
+        fmt: str = None,
+        fields = ('entity', 'attribute', 'value'),
+        vcast=None,
+        acast=str,
+        ecast=str,
+        defaults=None,
+        vcasts=None):
         '''
-        - fmt (one of the following ...)
+        - fmt (type may be specified using one of the following *strings*  ...)
             - dict: dictionary of dictionaries (auto-detected)
             - triple: list of EAV dictionaries/tuples  (defaulted)
             - column: list of records with field names as first row and entities on first column (must force this option)
-        - vcast: value cast
-        - acast: attribute cast
-        - ecast: entity cast
+        - vcast: value cast e.g. int
+        - acast: attribute cast e.g. str
+        - ecast: entity cast e.g. str
         - defaults: dictionary of defaults for specific attributes
         - vcasts: dictionary of casting for specific attributes
         '''
@@ -60,13 +60,13 @@ class EAV(dict, Unindexed):
 
         if fmt is None:
             if data is None:
-                fmt = 'triple' # although doesn't matter
+                fmt = 'triple'
             elif isinstance(data, dict):
                 fmt = 'dict'
             elif isinstance(data, typing.Iterable):
                 fmt = 'triple'
             else:
-                assert False # do not understand this data
+                assert False # do not understand this data format
 
         if not defaults:
             self.defaults = {} # keys are attributes
@@ -112,7 +112,8 @@ class EAV(dict, Unindexed):
 
     @staticmethod
     def is_list(thing):
-        return isinstance(thing, (list, tuple))
+        # return isinstance(thing, (list, tuple))
+        return isinstance(thing, list)
 
     @staticmethod
     def to_list(thing):
@@ -221,7 +222,10 @@ class EAV(dict, Unindexed):
             elif EAV.is_list(a) or EAV.is_list(e):
                 return _get(entities=EAV.to_list(e), attributes=EAV.to_list(a))
             else:
-                assert e in self
+                if e not in self:
+                    print('x', e, a)
+                    print(self.keys())
+                    raise KeyError
                 if a in self[e]:
                     return self[e][a]
                 elif a in self.defaults:
@@ -297,7 +301,7 @@ class EAV(dict, Unindexed):
 
     def attributes(self, entities=None):
         '''
-        Computationally determine which attributes are used for certain entities
+        computationally determine which attributes are used for specified entities
         '''
         result = []
         for entity in self._check_entities(entities):
@@ -308,7 +312,7 @@ class EAV(dict, Unindexed):
 
     def rename(self, renames, entities=None):
         '''
-        rename attributes (not the entities)
+        rename attributes (... not the entities)
         '''
         new = self.copy()
         for entity in new._check_entities(entities):
@@ -347,14 +351,15 @@ class EAV(dict, Unindexed):
         row = row_by_entity if by_entity else row_by_attribute
         yield from row()
 
-    def string(self, sep=',', by_entity=True, attributes=None, entities=None):
+    def string(self, sep=',', by_entity=False, attributes=None, entities=None):
         return '\n'.join([sep.join(row) for row in self.tabular(
                     by_entity=by_entity,
                     attributes=attributes,
                     entities=entities)])
 
     def __str__(self):
-        return self.string()
+        return '\n'.join([
+            ','.join([str(y) for y in x]) for x in self.triples()])
 
 class Test_EAV(unittest.TestCase):
 
@@ -367,7 +372,7 @@ class Test_EAV(unittest.TestCase):
             ('Fred', 0, 0, 11, 'ok', 0),
             ('Wilma', -1, -2, 17, 'better', 1),
             (1, 0, 4, 100, 'poor', 1),
-            (2, 0, 6, 33, 'poor', 1)], vcast=int, vcasts=self.vcasts, fmt='column')
+            (2, 0, 6, 33, 'poor', 1)], vcast=int, acast = str, ecast=str, vcasts=self.vcasts, fmt='column')
 
     def test_compose(self):
         t1 = EAV({
@@ -415,8 +420,7 @@ class Test_EAV(unittest.TestCase):
         assert len(t2) == len(t2.attributes()) == 2
 
     def test_strings(self):
-        t1 = self.t1
-        t1.string(by_entity=True)
+        t1 = self.t1.string()
 
     def test_get(self):
         t1 = self.t1
